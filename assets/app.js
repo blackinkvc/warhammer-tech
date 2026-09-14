@@ -411,7 +411,6 @@
   function openModal(html){
     modalCard.innerHTML = html;
     modal.classList.remove('hidden');
-    bindLinks(modalCard);
   }
   function closeModal(){ modal.classList.add('hidden'); modalCard.innerHTML=''; }
 
@@ -481,19 +480,13 @@
   }
 
   /* ---------------- 事件绑定 ---------------- */
-  // data-open 链接绑定：给弹窗内的实体链接也补上监听器
-  function bindLinks(scope=document){
-    $$('[data-open]', scope).forEach(el=>{
-      if(el.dataset.linkBound) return;
-      el.dataset.linkBound = '1';
-      el.addEventListener('click', (e)=>{
-        if(el.classList.contains('entity-link')) e.stopPropagation();
-        openByType(el.dataset.open, el.dataset.id);
-      });
-    });
-  }
+  // 实体链接统一用事件委托：任何带 data-open 的元素（含弹窗内动态插入的）点击即响应，无需重复绑定
+  document.addEventListener('click', (e)=>{
+    const el = e.target.closest('[data-open]');
+    if(!el) return;
+    openByType(el.dataset.open, el.dataset.id);
+  });
   function bindView(){
-    bindLinks();
     $$('[data-jump]').forEach(el=>{
       el.addEventListener('click', ()=>setView(el.dataset.jump));
     });
