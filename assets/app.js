@@ -32,8 +32,19 @@
     Object.values(F).forEach(f=> (f.detail.关键词||[]).forEach(k=>add(k,'faction',f.id,1)));
     Object.values(C).forEach(c=> (c.detail.关键词||[]).forEach(k=>add(k,'concept',c.id,1)));
     Object.values(T).forEach(t=> (t.detail.关键词||[]).forEach(k=>add(k,'tech',t.id,1)));
+    // 散文里常用的简称/异称也设为可点击（优先级最高，避免被其它词条抢匹配）
+    ALIASES.forEach(([name,type,id])=> add(name,type,id,3));
     return map;
   }
+  // 简称/异称 → 对应实体：满足「古老者 / 灵族 / 死灵族」等短称可点开
+  const ALIASES = [
+    ['灵族','faction','eldar'],
+    ['古老者','faction','oldones'],
+    ['死灵族','faction','necrons'],
+    ['混沌','faction','chaos'],
+    ['泰伦','faction','tyranids'],
+    ['灵能造物','concept','psyker'],
+  ];
   const entityMap = buildEntityMap();
   const entityKeys = [...entityMap.keys()].sort((a,b)=>b.length-a.length);
   const entityRegex = entityKeys.length
