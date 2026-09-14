@@ -29,14 +29,12 @@
     Object.values(T).forEach(t=>{ add(t.name,'tech',t.id,2); add(t.en,'tech',t.id,2); });
     Object.values(R).forEach(r=>{ add(r.name,'ref',r.id,2); add(r.en,'ref',r.id,2); });
     // 关键词次之
-    Object.values(F).forEach(f=> (f.detail.关键词||[]).forEach(k=>add(k,'faction',f.id,1)));
-    Object.values(C).forEach(c=> (c.detail.关键词||[]).forEach(k=>add(k,'concept',c.id,1)));
-    Object.values(T).forEach(t=> (t.detail.关键词||[]).forEach(k=>add(k,'tech',t.id,1)));
-    // 散文里常用的简称/异称也设为可点击（优先级最高，避免被其它词条抢匹配）
+    // 只把「条目名/英文名」和明确「别名」设为可点击；关键词只做展示，
+    // 不再自动链接，避免“世界/改造/造物/吞噬/现实”等普通词牵强成链。
     ALIASES.forEach(([name,type,id])=> add(name,type,id,3));
     return map;
   }
-  // 简称/异称 → 对应实体：满足「古老者 / 灵族 / 死灵族」等短称可点开
+  // 简称/异称 → 对应实体：散文里常用的专有名词短称才需要指向
   const ALIASES = [
     ['灵族','faction','eldar'],
     ['古老者','faction','oldones'],
