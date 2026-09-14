@@ -42,6 +42,12 @@
     ['混沌','faction','chaos'],
     ['泰伦','faction','tyranids'],
     ['灵能造物','concept','psyker'],
+    ['色孽','concept','chaos-gods'],
+    ['恐虐','concept','chaos-gods'],
+    ['奸奇','concept','chaos-gods'],
+    ['纳垢','concept','chaos-gods'],
+    ['欧克','faction','orks'],
+    ['兽人','faction','orks'],
   ];
   const entityMap = buildEntityMap();
   const entityKeys = [...entityMap.keys()].sort((a,b)=>b.length-a.length);
@@ -261,7 +267,7 @@
     const meta = searchQ ? `<div class="result-meta">检索「${searchQ}」· 命中 ${eras.reduce((s,e)=>s+e.events.length,0)} 个节点</div>` : '';
     const body = eras.map(e=>{
       const items = e.events.map(ev=>`
-        <div class="tl-item" ${ev.id?`data-open="faction" data-id="${ev.id}"`:''} style="--cat-color:${e.color}">
+        <div class="tl-item" style="--cat-color:${e.color}">
           <div class="tl-date">${ev.date}</div>
           <div class="tl-title">${richText(ev.title)}</div>
           <div class="tl-sub">${richText(ev.sub)}</div>
