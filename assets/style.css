@@ -28,6 +28,27 @@ body{
 a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-light)}
 a:hover{border-bottom-color:var(--ink)}
 
+/* ---------- 实体链接（文本中可点击的派系/概念/科技/参考名） ---------- */
+.entity-link{
+  color:var(--accent);
+  border-bottom:1px dashed var(--accent);
+  cursor:pointer;
+  transition:color .15s,border-color .15s,background .15s;
+}
+.entity-link:hover{
+  color:var(--ink);
+  border-bottom-style:solid;
+  background:var(--accent-bg);
+}
+.m-tag .entity-link{
+  color:inherit;
+  border-bottom:1px dotted var(--ink-soft);
+  background:transparent;
+}
+.m-tag .entity-link:hover{
+  background:rgba(0,0,0,.08);
+}
+
 /* ---------- 顶部导航 ---------- */
 .site-header{
   position:sticky;top:0;z-index:50;

@@ -12,6 +12,46 @@
 
   const byId = (arr)=>Object.fromEntries(arr.map(x=>[x.id,x]));
   const F = byId(FACTIONS), C = byId(CONCEPTS), R = byId(REFS), T = byId(TECH);
+
+  /* ---------- 实体链接：把文本里的派系/概念/科技/参考名标为可点击 ---------- */
+  function buildEntityMap(){
+    const map = new Map();
+    const add = (name, type, id, priority=0)=>{
+      if(!name) return;
+      const key = String(name).trim();
+      if(!key) return;
+      const ex = map.get(key);
+      if(!ex || priority > ex.priority) map.set(key, {type, id, priority});
+    };
+    // 名字最高优先级
+    Object.values(F).forEach(f=>{ add(f.name,'faction',f.id,2); add(f.en,'faction',f.id,2); });
+    Object.values(C).forEach(c=>{ add(c.name,'concept',c.id,2); add(c.en,'concept',c.id,2); });
+    Object.values(T).forEach(t=>{ add(t.name,'tech',t.id,2); add(t.en,'tech',t.id,2); });
+    Object.values(R).forEach(r=>{ add(r.name,'ref',r.id,2); add(r.en,'ref',r.id,2); });
+    // 关键词次之
+    Object.values(F).forEach(f=> (f.detail.关键词||[]).forEach(k=>add(k,'faction',f.id,1)));
+    Object.values(C).forEach(c=> (c.detail.关键词||[]).forEach(k=>add(k,'concept',c.id,1)));
+    Object.values(T).forEach(t=> (t.detail.关键词||[]).forEach(k=>add(k,'tech',t.id,1)));
+    return map;
+  }
+  const entityMap = buildEntityMap();
+  const entityKeys = [...entityMap.keys()].sort((a,b)=>b.length-a.length);
+  const entityRegex = entityKeys.length
+    ? new RegExp(entityKeys.map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'), 'g')
+    : null;
+  function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function linkEntities(text){
+    if(!text || !entityRegex) return text;
+    return String(text).split(/(<[^>]+>)/g).map((part,i)=>{
+      if(i%2===1 || part.startsWith('<')) return part;
+      return part.replace(entityRegex, (m)=>{
+        const e = entityMap.get(m);
+        return `<span class="entity-link" data-open="${e.type}" data-id="${e.id}">${m}</span>`;
+      });
+    }).join('');
+  }
+  function richText(text){ return linkEntities(escapeHtml(text)); }
+
   const COLOR = {host:'#b5462f', kin:'#9b7cc0', serve:'#8B6914', ally:'#4a7c6f'};
   const REL_TXT = {host:'敌对', kin:'渊源', serve:'统属', ally:'同盟'};
   // 层级：子势力沿用父级阵营归类
@@ -96,8 +136,8 @@
         <div class="hero-orn">${ORN.aquila}</div>
         <h2>人类帝国与银河诸族</h2>
         <p class="lead">第 41 千年 · 战锤 40K 世界观科普长卷</p>
-        <p>在遥远的未来，唯有战争。人类帝国在僵化的神权官僚下苟延残喘，而四周环伺着混沌、异形与吞噬星河的虫潮。</p>
-        <p>本档案以帝国圣典之体例，收纳派系、纪元、概念与关系拓扑，俾使后来者得以一窥这黑暗而壮丽的银河图景。</p>
+        <p>${richText('在遥远的未来，唯有战争。人类帝国在僵化的神权官僚下苟延残喘，而四周环伺着混沌、异形与吞噬星河的虫潮。')}</p>
+        <p>${richText('本档案以帝国圣典之体例，收纳派系、纪元、概念与关系拓扑，俾使后来者得以一窥这黑暗而壮丽的银河图景。')}</p>
         <div class="callout">「帝皇庇佑。本库为非官方科普索引，所有世界观设定归属 Games Workshop。数据截至 M41.999 修订版。」</div>
       </div>
 
@@ -105,8 +145,8 @@
         <div class="scroll-sec-head"><span class="scroll-num">壹</span><h2>世界观概述</h2></div>
         <div class="scroll-body">
           <div class="txt">
-            <p class="dropcap">银河广袤无垠，却无一处安宁。人类曾凭「科技黑暗时代」的伟力傲视群星，却因铁人叛乱与亚空间风暴跌落凡尘。当帝皇自泰拉崛起，以基因原体与星际战士重燃大一统的烽火时，谁也未曾料到，最大的裂痕竟来自最信任的继承人。</p>
-            <p>今日的银河，是人类帝国、混沌、诸多异形文明与吞噬星海的虫潮彼此绞杀的修罗场。信仰、灵能与钢铁在此交汇，而时间，永远是帝国最稀缺的奢侈品。</p>
+            <p class="dropcap">${richText('银河广袤无垠，却无一处安宁。人类曾凭「科技黑暗时代」的伟力傲视群星，却因铁人叛乱与亚空间风暴跌落凡尘。当帝皇自泰拉崛起，以基因原体与星际战士重燃大一统的烽火时，谁也未曾料到，最大的裂痕竟来自最信任的继承人。')}</p>
+            <p>${richText('今日的银河，是人类帝国、混沌、诸多异形文明与吞噬星海的虫潮彼此绞杀的修罗场。信仰、灵能与钢铁在此交汇，而时间，永远是帝国最稀缺的奢侈品。')}</p>
           </div>
           <div class="orn">${ORN.aquila}</div>
         </div>
@@ -116,7 +156,7 @@
         <div class="scroll-sec-head"><span class="scroll-num">贰</span><h2>银河格局</h2></div>
         <div class="scroll-body">
           <div class="txt">
-            <p>以下为档案收录的主要势力。点击任一色标可直达派系名录；派系页可按「阵营」筛选帝国、混沌与异形诸族。</p>
+            <p>${richText('以下为档案收录的主要势力。点击任一色标可直达派系名录；派系页可按「阵营」筛选帝国、混沌与异形诸族。')}</p>
             <div class="mini-chips">${factionChips}</div>
           </div>
           <div class="orn">${ORN.bolt}</div>
@@ -127,7 +167,7 @@
         <div class="scroll-sec-head"><span class="scroll-num">叁</span><h2>时间长河</h2></div>
         <div class="scroll-body">
           <div class="txt">
-            <p>自「战争之神代」的远古余烬，到大远征的辉煌、荷鲁斯叛乱的转折，再到大裂隙撕裂银河——历史从未真正远去。</p>
+            <p>${richText('自「战争之神代」的远古余烬，到大远征的辉煌、荷鲁斯叛乱的转折，再到大裂隙撕裂银河——历史从未真正远去。')}</p>
             <div class="era-tease">${eraTease}</div>
           </div>
           <div class="orn">${ORN.compass}</div>
@@ -138,7 +178,7 @@
         <div class="scroll-sec-head"><span class="scroll-num">肆</span><h2>核心概念</h2></div>
         <div class="scroll-body">
           <div class="txt">
-            <p>理解世界观的关键词：帝皇、亚空间、灵能、星语、阿斯塔特、混沌四神、网道……点击进入概念名录。</p>
+            <p>${richText('理解世界观的关键词：帝皇、亚空间、灵能、星语、阿斯塔特、混沌四神、网道……点击进入概念名录。')}</p>
             <div class="mini-chips">${conceptChips}</div>
           </div>
           <div class="orn">${ORN.eye}</div>
@@ -198,7 +238,7 @@
       <h3 class="tname">${f.name}</h3>
       <span class="ten">${f.en}</span>
       <div class="tmeta">${badges}${subTag}</div>
-      <p class="tsum">${f.summary}</p>
+      <p class="tsum">${richText(f.summary)}</p>
     </article>`;
   }
 
@@ -214,8 +254,8 @@
       const items = e.events.map(ev=>`
         <div class="tl-item" ${ev.id?`data-open="faction" data-id="${ev.id}"`:''} style="--cat-color:${e.color}">
           <div class="tl-date">${ev.date}</div>
-          <div class="tl-title">${ev.title}</div>
-          <div class="tl-sub">${ev.sub}</div>
+          <div class="tl-title">${richText(ev.title)}</div>
+          <div class="tl-sub">${richText(ev.sub)}</div>
         </div>`).join('');
       return `<div class="tl-era">
         <div class="tl-era-head"><span class="name">${e.name}</span><span class="span">${e.span}</span></div>
@@ -238,7 +278,7 @@
           <span class="ctag">${c.cat}</span>
           <h3 class="cname">${c.name}</h3>
           <span class="cen">${c.en}</span>
-          <p class="csum">${c.summary}</p>
+          <p class="csum">${richText(c.summary)}</p>
         </article>`).join('')
       : `<div class="empty-note">未检索到匹配「${searchQ}」的概念。</div>`;
     return `
@@ -263,7 +303,7 @@
           <span class="t-cat">${t.cat}</span>
           <h3 class="t-name">${t.name}</h3>
           <span class="t-en">${t.en}</span>
-          <p class="t-sum">${t.summary}</p>
+          <p class="t-sum">${richText(t.summary)}</p>
         </article>`).join('')
       : `<div class="empty-note">未检索到匹配的科技条目。</div>`;
     return `
@@ -337,7 +377,7 @@
           <div class="rc-top"><span class="rc-tag">${r.tag}</span><span class="rc-year">${r.year}</span></div>
           <h3 class="rc-name">${r.name}</h3>
           <span class="rc-en">${r.en}</span>
-          <p class="rc-lead">${r.lead}</p>
+          <p class="rc-lead">${richText(r.lead)}</p>
           <div class="rc-foot"><span class="rc-founder">点击查看卷宗详情</span><span class="rc-more">查阅 →</span></div>
         </article>`).join('')
       : `<div class="empty-note">未检索到匹配「${searchQ}」的参考资料。</div>`;
@@ -362,11 +402,11 @@
 
   function factionModal(f){
     const rows = [];
-    rows.push(row('概述', `<div class="m-summary">${f.detail.概述}</div>`));
-    rows.push(row('起源', `<p class="m-people">${f.detail.起源}</p>`));
-    rows.push(row('组织结构', `<ul class="m-list">${f.detail.结构.map(x=>`<li>${x}</li>`).join('')}</ul>`));
-    rows.push(row('战力评估', `<p class="m-people">${f.detail.战力}</p>`));
-    rows.push(row('关键词', `<div class="m-tags">${f.detail.关键词.map(k=>`<span class="m-tag">${k}</span>`).join('')}</div>`));
+    rows.push(row('概述', `<div class="m-summary">${richText(f.detail.概述)}</div>`));
+    rows.push(row('起源', `<p class="m-people">${richText(f.detail.起源)}</p>`));
+    rows.push(row('组织结构', `<ul class="m-list">${f.detail.结构.map(x=>`<li>${richText(x)}</li>`).join('')}</ul>`));
+    rows.push(row('战力评估', `<p class="m-people">${richText(f.detail.战力)}</p>`));
+    rows.push(row('关键词', `<div class="m-tags">${f.detail.关键词.map(k=>`<span class="m-tag">${richText(k)}</span>`).join('')}</div>`));
     openModal(`
       <div class="modal-head">
         <button class="m-close" data-close>×</button>
@@ -384,12 +424,12 @@
         <div class="m-en">${c.en} · ${c.cat}</div>
       </div>
       <div class="modal-body">
-        ${row('释义', `<div class="m-summary">${c.detail.说明}</div>`)}
-        ${row('关键词', `<div class="m-tags">${c.detail.关键词.map(k=>`<span class="m-tag">${k}</span>`).join('')}</div>`)}
+        ${row('释义', `<div class="m-summary">${richText(c.detail.说明)}</div>`)}
+        ${row('关键词', `<div class="m-tags">${c.detail.关键词.map(k=>`<span class="m-tag">${richText(k)}</span>`).join('')}</div>`)}
       </div>`);
   }
   function refModal(r){
-    const drows = Object.entries(r.detail).map(([k,v])=>`<div class="m-sub">${k}：${v}</div>`).join('');
+    const drows = Object.entries(r.detail).map(([k,v])=>`<div class="m-sub">${k}：${richText(v)}</div>`).join('');
     openModal(`
       <div class="modal-head">
         <button class="m-close" data-close>×</button>
@@ -398,12 +438,12 @@
         <div class="m-badges"><span class="tbadge">${r.tag}</span><span class="tbadge">${r.year}</span></div>
       </div>
       <div class="modal-body">
-        ${row('提要', `<div class="m-summary">${r.lead}</div>`)}
+        ${row('提要', `<div class="m-summary">${richText(r.lead)}</div>`)}
         ${row('卷宗信息', drows)}
       </div>`);
   }
   function techModal(t){
-    const reps = t.detail.代表 ? row('代表产物', `<ul class="m-list">${t.detail.代表.map(x=>`<li>${x}</li>`).join('')}</ul>`) : '';
+    const reps = t.detail.代表 ? row('代表产物', `<ul class="m-list">${t.detail.代表.map(x=>`<li>${richText(x)}</li>`).join('')}</ul>`) : '';
     openModal(`
       <div class="modal-head">
         <button class="m-close" data-close>×</button>
@@ -411,9 +451,9 @@
         <div class="m-en">${t.en} · ${t.cat}</div>
       </div>
       <div class="modal-body">
-        ${row('说明', `<div class="m-summary">${t.detail.说明}</div>`)}
+        ${row('说明', `<div class="m-summary">${richText(t.detail.说明)}</div>`)}
         ${reps}
-        ${row('关键词', `<div class="m-tags">${t.detail.关键词.map(k=>`<span class="m-tag">${k}</span>`).join('')}</div>`)}
+        ${row('关键词', `<div class="m-tags">${t.detail.关键词.map(k=>`<span class="m-tag">${richText(k)}</span>`).join('')}</div>`)}
       </div>`);
   }
   function row(label, body){ return `<div class="m-row"><div class="m-label">${label}</div>${body}</div>`; }
@@ -428,7 +468,10 @@
   /* ---------------- 事件绑定 ---------------- */
   function bindView(){
     $$('[data-open]').forEach(el=>{
-      el.addEventListener('click', ()=>openByType(el.dataset.open, el.dataset.id));
+      el.addEventListener('click', (e)=>{
+        if(el.classList.contains('entity-link')) e.stopPropagation();
+        openByType(el.dataset.open, el.dataset.id);
+      });
     });
     $$('[data-jump]').forEach(el=>{
       el.addEventListener('click', ()=>setView(el.dataset.jump));
