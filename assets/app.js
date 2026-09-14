@@ -47,7 +47,6 @@
     ['奸奇','concept','chaos-gods'],
     ['纳垢','concept','chaos-gods'],
     ['欧克','faction','orks'],
-    ['兽人','faction','orks'],
   ];
   const entityMap = buildEntityMap();
   const entityKeys = [...entityMap.keys()].sort((a,b)=>b.length-a.length);

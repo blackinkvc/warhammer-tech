@@ -66,11 +66,11 @@ const FACTIONS = [
     }
   },
   {
-    id:'orks', name:'欧克兽人', en:'Orks', group:'异形', color:'#6b8e23',
+    id:'orks', name:'兽人', en:'Orks', group:'异形', color:'#6b8e23',
     meta:['本性：好战','增殖：孢子','科技：手搓'],
     summary:'由古老者造物「 Kroks」演化而来的真菌类兽人，越打越强、靠孢子无限增殖，痴迷于战争与「WAAAGH!」的集体灵能。',
     detail:{
-      概述:'欧克兽人是古老者在「战争之神代」培育的生物兵器后裔，本质上是真菌，死亡后化为孢子重新繁殖。他们崇拜战争本身，亿万兽人汇聚成「WAAAGH!」时会产生集体灵能，让粗劣的「手搓科技」诡异地生效。',
+      概述:'兽人是古老者在「战争之神代」培育的生物兵器后裔，本质上是真菌，死亡后化为孢子重新繁殖。他们崇拜战争本身，亿万兽人汇聚成「WAAAGH!」时会产生集体灵能，让粗劣的「手搓科技」诡异地生效。',
       起源:'由古老者对抗死灵族而创造的生物兵器（Kroks）演化而来，几乎无法被彻底根除。',
       结构:['战争头目（Warboss，最强者统领）','兽人（Boyz）、 Nobz（精锐）','机械小子（Mekboy，造武器载具）','菌奴（Gretchin，苦力）'],
       战力:'数量恐怖、越战越强，但内斗与无纪律限制了战略。',
@@ -333,7 +333,7 @@ const GRAPH_NODES = [
   {id:'necrons', label:'太空死灵', color:'#6b7d8c', type:'faction'},
   {id:'eldar', label:'方舟灵族', color:'#4a7c6f', type:'faction'},
   {id:'drukhari', label:'暗灵族', color:'#7a4fb0', type:'faction'},
-  {id:'orks', label:'欧克兽人', color:'#6b8e23', type:'faction'},
+  {id:'orks', label:'兽人', color:'#6b8e23', type:'faction'},
   {id:'tau', label:'钛帝国', color:'#1f5fa8', type:'faction'},
   {id:'tyranids', label:'泰伦虫族', color:'#b5462f', type:'faction'},
   {id:'inquisition', label:'审判庭', color:'#5b4a8c', type:'faction'},
@@ -487,7 +487,7 @@ const TECH = [
   },
   {
     id:'orktek', name:'欧克手搓科技', en:'Ork "Tek"', cat:'异形科技', color:'#4a7c6f',
-    summary:'欧克兽人凭「信仰即现实」的集体灵能，把粗劣焊接的废铁变成真能用的飞船与大炮。',
+    summary:'兽人凭「信仰即现实」的集体灵能，把粗劣焊接的废铁变成真能用的飞船与大炮。',
     detail:{ 关键词:['WAAAGH','信仰','手搓','灵能'],
       说明:'欧克科技毫无工程逻辑：锈铁飞船能飞、胶布大炮能轰，只因无数欧克坚信「它能用」。这种群体灵能让「手搓科技」在现实中生效，是银河最离谱也最可靠的怪象。',
       代表:['撕裂者（Shokk Attack）炮','太空废铁飞船（Rok）','动力拳套（Power Klaw）'] }
