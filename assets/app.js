@@ -47,6 +47,9 @@
     ['奸奇','concept','chaos-gods'],
     ['纳垢','concept','chaos-gods'],
     ['欧克','faction','orks'],
+    ['恐惧之眼','concept','eyeofterror'],
+    ['卡迪亚陷落','concept','cadia'],
+    ['阿巴顿','faction','chaos'],
   ];
   const entityMap = buildEntityMap();
   const entityKeys = [...entityMap.keys()].sort((a,b)=>b.length-a.length);
@@ -431,16 +434,18 @@
       <div class="modal-body">${rows.join('')}</div>`);
   }
   function conceptModal(c){
+    const labelMap = {'说明':'释义','关键词':'关键词'};
+    const body = Object.entries(c.detail).map(([k,v])=>{
+      if(k==='关键词') return row('关键词', `<div class="m-tags">${v.map(x=>`<span class="m-tag">${richText(x)}</span>`).join('')}</div>`);
+      return row(labelMap[k]||k, `<div class="m-summary">${richText(v)}</div>`);
+    }).join('');
     openModal(`
       <div class="modal-head">
         <button class="m-close" data-close>×</button>
         <h2>${c.name}</h2>
         <div class="m-en">${c.en} · ${c.cat}</div>
       </div>
-      <div class="modal-body">
-        ${row('释义', `<div class="m-summary">${richText(c.detail.说明)}</div>`)}
-        ${row('关键词', `<div class="m-tags">${c.detail.关键词.map(k=>`<span class="m-tag">${richText(k)}</span>`).join('')}</div>`)}
-      </div>`);
+      <div class="modal-body">${body}</div>`);
   }
   function refModal(r){
     const drows = Object.entries(r.detail).map(([k,v])=>`<div class="m-sub">${k}：${richText(v)}</div>`).join('');
