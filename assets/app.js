@@ -411,6 +411,7 @@
   function openModal(html){
     modalCard.innerHTML = html;
     modal.classList.remove('hidden');
+    bindLinks(modalCard);
   }
   function closeModal(){ modal.classList.add('hidden'); modalCard.innerHTML=''; }
 
@@ -480,13 +481,19 @@
   }
 
   /* ---------------- 事件绑定 ---------------- */
-  function bindView(){
-    $$('[data-open]').forEach(el=>{
+  // data-open 链接绑定：给弹窗内的实体链接也补上监听器
+  function bindLinks(scope=document){
+    $$('[data-open]', scope).forEach(el=>{
+      if(el.dataset.linkBound) return;
+      el.dataset.linkBound = '1';
       el.addEventListener('click', (e)=>{
         if(el.classList.contains('entity-link')) e.stopPropagation();
         openByType(el.dataset.open, el.dataset.id);
       });
     });
+  }
+  function bindView(){
+    bindLinks();
     $$('[data-jump]').forEach(el=>{
       el.addEventListener('click', ()=>setView(el.dataset.jump));
     });
