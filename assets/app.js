@@ -72,6 +72,12 @@
     }).join('');
   }
   function richText(text){ return linkEntities(escapeHtml(text)); }
+  // Fisher-Yates 洗牌（返回新数组，不改原数组）
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; }
+    return a;
+  }
 
   const COLOR = {host:'#b5462f', kin:'#9b7cc0', serve:'#8B6914', ally:'#4a7c6f'};
   const REL_TXT = {host:'敌对', kin:'渊源', serve:'统属', ally:'同盟'};
@@ -144,7 +150,12 @@
     const factionChips = topFactions.map(f=>
       `<span class="mini-chip" data-jump="factions"><span class="dot" style="background:${f.color}"></span>${f.name}</span>`
     ).join('');
-    const conceptChips = CONCEPTS.map(c=>
+    const conceptAll = shuffle(CONCEPTS);
+    const HOME_CONCEPT_PREVIEW = 30;
+    const conceptPreview = conceptAll.slice(0, HOME_CONCEPT_PREVIEW).map(c=>
+      `<span class="mini-chip" data-jump="concepts"><span class="dot" style="background:${c.color}"></span>${c.name}</span>`
+    ).join('');
+    const conceptRest = conceptAll.slice(HOME_CONCEPT_PREVIEW).map(c=>
       `<span class="mini-chip" data-jump="concepts"><span class="dot" style="background:${c.color}"></span>${c.name}</span>`
     ).join('');
     const eraTease = ERAS.map(e=>
@@ -200,7 +211,8 @@
         <div class="scroll-body">
           <div class="txt">
             <p>${richText('理解世界观的关键词：帝皇、亚空间、灵能、星语、阿斯塔特、混沌四神、网道……点击进入概念名录。')}</p>
-            <div class="mini-chips">${conceptChips}</div>
+            <div class="mini-chips" id="homeConceptChips">${conceptPreview}<span class="concept-rest" hidden>${conceptRest}</span></div>
+            <button type="button" class="expand-btn" id="homeConceptToggle" aria-expanded="false">展开全部 ${CONCEPTS.length} 个概念 ↓</button>
           </div>
           <div class="orn">${ORN.eye}</div>
         </div>
@@ -291,7 +303,7 @@
 
   /* ---------------- 概念 ---------------- */
   function renderConcepts(){
-    let list = CONCEPTS;
+    let list = shuffle(CONCEPTS); // 每次打开随机排序，增加探索性
     if(searchQ) list = list.filter(c=>matchConcept(c));
     const meta = searchQ ? `<div class="result-meta">检索「${searchQ}」· 命中 ${list.length} 条</div>` : '';
     const cards = list.length
@@ -537,6 +549,13 @@
     });
     $$('.sg-head').forEach(h=>{
       h.addEventListener('click', ()=>h.closest('.search-group').classList.toggle('collapsed'));
+    });
+    const homeToggle = $('#homeConceptToggle');
+    if(homeToggle) homeToggle.addEventListener('click', ()=>{
+      const rest = $('#homeConceptChips .concept-rest');
+      const expanded = !rest.hasAttribute('hidden');
+      if(expanded){ rest.setAttribute('hidden',''); homeToggle.setAttribute('aria-expanded','false'); homeToggle.textContent='展开全部 '+CONCEPTS.length+' 个概念 ↓'; }
+      else { rest.removeAttribute('hidden'); homeToggle.setAttribute('aria-expanded','true'); homeToggle.textContent='收起 ↑'; }
     });
     const svg = $('#graph-svg');
     if(svg) initGraph(svg);
