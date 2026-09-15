@@ -139,14 +139,6 @@
     const cats = {};
     topFactions.forEach(f=>cats[f.group]=(cats[f.group]||0)+1);
 
-    const ORN = {
-      aquila:`<svg viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M32 12 V42"/><path d="M32 20 C20 13 9 17 7 29 C17 25 25 27 32 31"/><path d="M32 20 C44 13 55 17 57 29 C47 25 39 27 32 31"/><path d="M32 42 l-6 13 M32 42 l6 13"/><circle cx="32" cy="11" r="3.4" fill="currentColor"/></g></svg>`,
-      eye:`<svg viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="2.4"><path d="M8 32 Q32 12 56 32 Q32 52 8 32 Z"/><circle cx="32" cy="32" r="9" fill="currentColor"/><circle cx="32" cy="32" r="3.2" fill="#F6F2E7"/></g></svg>`,
-      bolt:`<svg viewBox="0 0 64 64"><path d="M37 6 L17 37 L29 37 L25 58 L47 25 L34 25 Z" fill="currentColor"/></svg>`,
-      compass:`<svg viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="32" cy="32" r="22"/><path d="M32 13 L38 32 L32 51 L26 32 Z" fill="currentColor"/><path d="M13 32 L32 26 L51 32 L32 38 Z" fill="currentColor" opacity=".45"/></g></svg>`,
-      scroll:`<svg viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="2.4"><rect x="14" y="14" width="36" height="36" rx="3"/><path d="M22 26 H42 M22 34 H42 M22 42 H36"/></g></svg>`
-    };
-
     const factionChips = topFactions.map(f=>
       `<span class="mini-chip" data-jump="factions"><span class="dot" style="background:${f.color}"></span>${f.name}</span>`
     ).join('');
@@ -165,7 +157,6 @@
     return `
     <div class="home-scroll">
       <div class="prose hero">
-        <div class="hero-orn">${ORN.aquila}</div>
         <h2>人类帝国与银河诸族</h2>
         <p class="lead">第 41 千年 · 战锤 40K 世界观科普长卷</p>
         <p>${richText('在遥远的未来，唯有战争。人类帝国在僵化的神权官僚下苟延残喘，而四周环伺着混沌、异形与吞噬星河的虫潮。')}</p>
@@ -180,7 +171,6 @@
             <p class="dropcap">${richText('银河广袤无垠，却无一处安宁。人类曾凭「科技黑暗时代」的伟力傲视群星，却因铁人叛乱与亚空间风暴跌落凡尘。当帝皇自泰拉崛起，以基因原体与星际战士重燃大一统的烽火时，谁也未曾料到，最大的裂痕竟来自最信任的继承人。')}</p>
             <p>${richText('今日的银河，是人类帝国、混沌、诸多异形文明与吞噬星海的虫潮彼此绞杀的修罗场。信仰、灵能与钢铁在此交汇，而时间，永远是帝国最稀缺的奢侈品。')}</p>
           </div>
-          <div class="orn">${ORN.aquila}</div>
         </div>
       </section>
 
@@ -191,7 +181,6 @@
             <p>${richText('以下为档案收录的主要势力。点击任一色标可直达派系名录；派系页可按「阵营」筛选帝国、混沌与异形诸族。')}</p>
             <div class="mini-chips">${factionChips}</div>
           </div>
-          <div class="orn">${ORN.bolt}</div>
         </div>
       </section>
 
@@ -202,7 +191,6 @@
             <p>${richText('自「战争之神代」的远古余烬，到大远征的辉煌、荷鲁斯叛乱的转折，再到大裂隙撕裂银河——历史从未真正远去。')}</p>
             <div class="era-tease">${eraTease}</div>
           </div>
-          <div class="orn">${ORN.compass}</div>
         </div>
       </section>
 
@@ -214,7 +202,6 @@
             <div class="mini-chips" id="homeConceptChips">${conceptPreview}<span class="concept-rest" hidden>${conceptRest}</span></div>
             <button type="button" class="expand-btn" id="homeConceptToggle" aria-expanded="false">展开全部 ${CONCEPTS.length} 个概念 ↓</button>
           </div>
-          <div class="orn">${ORN.eye}</div>
         </div>
       </section>
 
