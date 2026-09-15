@@ -260,6 +260,16 @@ main{max-width:var(--maxw);margin:0 auto;padding:30px 24px 70px}
 .glegend .lg-title{font-weight:700;color:var(--ink);margin-right:2px}
 .glegend .lg-item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .glegend .lg-dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.gfilter-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px;padding:8px 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.gf-title{font-size:12px;color:var(--ink-soft);margin-right:2px;font-weight:700}
+.gfilter{
+  font-family:inherit;font-size:12px;padding:4px 11px;border:1px solid var(--line);border-radius:14px;
+  background:var(--bg-soft);color:var(--ink-soft);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.15s;
+}
+.gfilter:hover{border-color:var(--accent)}
+.gfilter.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.gfilter .gf-count{font-size:10px;opacity:.85}
+.gfilter.all{background:transparent;color:var(--accent);font-weight:700}
 
 /* ---------- 概念专用（双栏） ---------- */
 .concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}

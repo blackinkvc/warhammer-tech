@@ -368,6 +368,9 @@
     const glegend = Object.entries(REL_TXT).map(([k,v])=>
       `<span class="lg-item"><span class="lg-dot" style="background:${COLOR[k]}"></span>${v}</span>`
     ).join('');
+    const gcats = {};
+    GRAPH_NODES.forEach(n=>{ const cc = n.type==='faction' ? '派系' : (C[n.id]?C[n.id].cat:'核心'); gcats[cc]=(gcats[cc]||0)+1; });
+    const gchips = Object.keys(gcats).sort().map(c=>`<button class="gfilter active" data-cat="${c}">${c}<span class="gf-count">${gcats[c]}</span></button>`).join('');
     return `
     <div class="section-head"><h2>关系拓扑图</h2><span class="more">派系 · 概念 · 渊源</span></div>
     <div class="graph-toolbar">
@@ -375,6 +378,7 @@
       <span class="toolbar-note">切换可隐藏/显化关联类型的颜色编码</span>
     </div>
     <div class="glegend"><span class="lg-title">连线含义</span>${glegend}</div>
+    <div class="gfilter-bar"><span class="gf-title">分类显隐</span>${gchips}<button class="gfilter all" data-cat="__all__">全显</button></div>
     <div class="graph-layout">
       <div class="graph-wrap">
         <svg id="graph-svg" class="mode-type" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid meet"></svg>
@@ -520,6 +524,9 @@
     });
     const idIndex = {}; nodes.forEach((n,i)=>idIndex[n.id]=i);
     const links = GRAPH_LINKS.map(l=>({s:idIndex[l.s], t:idIndex[l.t], type:l.type}));
+    const catOf = {};
+    GRAPH_NODES.forEach(n=>{ catOf[n.id] = n.type==='faction' ? '派系' : (C[n.id]?C[n.id].cat:'核心'); });
+    const hiddenCats = new Set();
     const NS='http://www.w3.org/2000/svg';
     let dragNode=null, dragMoved=false;
 
@@ -577,6 +584,7 @@
       for(let i=0;i<nodes.length;i++){
         for(let j=i+1;j<nodes.length;j++){
           const a=nodes[i], b=nodes[j];
+          if(hiddenCats.has(catOf[a.id])||hiddenCats.has(catOf[b.id])) continue;
           let dx=a.x-b.x, dy=a.y-b.y; let d2=dx*dx+dy*dy; if(d2<1) d2=1;
           const d=Math.sqrt(d2); const f=REP/d2;
           const fx=dx/d*f, fy=dy/d*f;
@@ -585,20 +593,23 @@
       }
       links.forEach(l=>{
         const a=nodes[l.s], b=nodes[l.t];
+        if(hiddenCats.has(catOf[a.id])||hiddenCats.has(catOf[b.id])) return;
         let dx=b.x-a.x, dy=b.y-a.y; const d=Math.sqrt(dx*dx+dy*dy)||1;
         const f=(d-LEN)*SPRING; const fx=dx/d*f, fy=dy/d*f;
         a.vx+=fx; a.vy+=fy; b.vx-=fx; b.vy-=fy;
       });
       nodes.forEach(n=>{
         if(dragNode===n) { n.vx=0; n.vy=0; return; }
+        if(hiddenCats.has(catOf[n.id])) { n.vx=0; n.vy=0; return; }
         n.vx += (cx-n.x)*CENTER; n.vy += (cy-n.y)*CENTER;
         n.vx*=DAMP; n.vy*=DAMP;
         n.x += n.vx*alpha; n.y += n.vy*alpha;
         n.x=Math.max(40,Math.min(W-40,n.x)); n.y=Math.max(30,Math.min(H-30,n.y));
       });
-      alpha = Math.max(0.05, alpha*0.992);
+      alpha = alpha*0.992;
       render();
-      graphRAF = requestAnimationFrame(tick);
+      if(alpha>0.02 || dragNode){ graphRAF = requestAnimationFrame(tick); }
+      else { graphRAF = null; }
     }
 
     // 交互
@@ -611,14 +622,15 @@
       g.addEventListener('pointerenter', ()=>highlight(nodes[i].id));
       g.addEventListener('pointerleave', ()=>{ if(!dragNode) highlight(null); });
       g.addEventListener('pointerdown', (e)=>{
-        e.preventDefault(); dragNode=nodes[i]; dragMoved=false; g.setPointerCapture(e.pointerId);
+        e.preventDefault(); dragNode=nodes[i]; dragMoved=false; g.setPointerCapture(e.pointerId); wake();
       });
       g.addEventListener('pointermove', (e)=>{
         if(dragNode!==nodes[i]) return;
-        const p=svgPoint(e); dragNode.x=p.x; dragNode.y=p.y; dragMoved=true; alpha=Math.max(alpha,0.3);
+        const p=svgPoint(e); dragNode.x=p.x; dragNode.y=p.y; dragMoved=true; alpha=Math.max(alpha,0.3); wake();
       });
       g.addEventListener('pointerup', (e)=>{
         const wasDrag=dragMoved; dragNode=null; g.releasePointerCapture(e.pointerId);
+        alpha=Math.max(alpha,0.2); wake();
         if(!wasDrag) openByType(nodes[i].type, nodes[i].id);
       });
     });
@@ -640,6 +652,33 @@
         lmBtn.classList.toggle('active', typeMode);
       });
     }
+
+    // 分类显隐筛选
+    const layout = $('.graph-layout');
+    function applyVisibility(){
+      nodes.forEach((n,i)=>{ nodeEls[i].style.display = hiddenCats.has(catOf[n.id]) ? 'none' : ''; });
+      links.forEach((l,i)=>{ const hide = hiddenCats.has(catOf[nodes[l.s].id]) || hiddenCats.has(catOf[nodes[l.t].id]); linkEls[i].style.display = hide ? 'none' : ''; });
+      $$('.node-link[data-gnode]', $('.graph-side')).forEach(el=>{ el.style.display = hiddenCats.has(catOf[el.dataset.gnode]) ? 'none' : ''; });
+      highlight(null);
+    }
+    $$('.gfilter:not(.all)', layout).forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const cat = btn.dataset.cat;
+        if(hiddenCats.has(cat)){ hiddenCats.delete(cat); btn.classList.add('active'); }
+        else { hiddenCats.add(cat); btn.classList.remove('active'); }
+        applyVisibility();
+        alpha = Math.max(alpha, 0.6); wake();
+      });
+    });
+    const allBtn = $('.gfilter.all', layout);
+    if(allBtn) allBtn.addEventListener('click', ()=>{
+      hiddenCats.clear();
+      $$('.gfilter:not(.all)', layout).forEach(x=>x.classList.add('active'));
+      applyVisibility();
+      alpha = Math.max(alpha, 0.6); wake();
+    });
+
+    function wake(){ if(!graphRAF){ graphRAF = requestAnimationFrame(tick); } }
 
     render();
     tick();
