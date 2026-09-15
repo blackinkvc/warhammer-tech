@@ -42,14 +42,17 @@
     ['混沌','faction','chaos'],
     ['泰伦','faction','tyranids'],
     ['灵能造物','concept','psyker'],
-    ['色孽','concept','chaos-gods'],
-    ['恐虐','concept','chaos-gods'],
-    ['奸奇','concept','chaos-gods'],
-    ['纳垢','concept','chaos-gods'],
+    ['色孽','concept','slaanesh'],
+    ['恐虐','concept','khorne'],
+    ['奸奇','concept','tzeentch'],
+    ['纳垢','concept','nurgle'],
     ['欧克','faction','orks'],
     ['恐惧之眼','concept','eyeofterror'],
     ['卡迪亚陷落','concept','cadia'],
-    ['阿巴顿','faction','chaos'],
+    ['阿巴顿','concept','abaddon'],
+    ['荷鲁斯','concept','horus'],
+    ['基里曼','concept','guilliman'],
+    ['黑色军团','concept','blacklegion'],
   ];
   const entityMap = buildEntityMap();
   const entityKeys = [...entityMap.keys()].sort((a,b)=>b.length-a.length);
