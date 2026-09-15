@@ -169,21 +169,26 @@ const ERAS = [
     id:'war-in-heaven', name:'远古战争（战争之神代）', span:'约 M32 前数百万年', color:'#6b7d8c',
     events:[
       {date:'神话纪元', title:'古老者创造仆从', sub:'古老者（Old Ones）以灵能造物对抗死灵，催生了灵族与欧克的前身。', id:null},
-      {date:'War in Heaven', title:'死灵与星神之战', sub:'太空死灵在星神指引下几乎灭绝灵族盟友，最终以灵魂为代价赢得胜利并陷入沉眠。', id:'necrons'}
+      {date:'War in Heaven', title:'死灵与星神之战', sub:'太空死灵在星神指引下几乎灭绝灵族盟友，最终以灵魂为代价赢得胜利并陷入沉眠。', id:'necrons'},
+      {date:'远古', title:'古老者播种生命', sub:'古老者以基因工程在各世界播下灵族、兽人等仆从种族，建立以网道相连的星海文明。', id:'oldones'},
+      {date:'终局', title:'星神吞噬者降临', sub:'被称为星神的实体掠食灵能生命，迫使死灵以全族机械飞升换取惨胜，宇宙灵能生态剧变。', id:'ctann'}
     ]
   },
   {
     id:'dark-age', name:'科技黑暗时代', span:'M15 – M25', color:'#4a6b8c',
     events:[
       {date:'M15 起', title:'人类科技巅峰', sub:'人类掌握 AI（铁人）、跨星系航行与星球改造，疆域遍布银河，几乎无所不能。', id:'imperium'},
-      {date:'M25', title:'铁人叛乱', sub:'人工智能仆从反叛，引发毁灭性战争，人类失去绝大部分科技与文明。', id:null}
+      {date:'M25', title:'铁人叛乱', sub:'人工智能仆从反叛，引发毁灭性战争，人类失去绝大部分科技与文明。', id:null},
+      {date:'M20s', title:'铁人叛乱终结', sub:'人类在惨胜中废除 AI、封存科技，立下严禁思考机器的铁律，开启漫长退化。', id:null}
     ]
   },
   {
     id:'age-of-strife', name:'迷航时代', span:'M25 – M30', color:'#8b2f24',
     events:[
       {date:'M25–M30', title:'亚空间风暴隔绝星海', sub:'亚空间剧变切断了人类世界的联系，邪教、变种人与异形肆虐，文明退化为封建部落。', id:null},
-      {date:'终末', title:'帝皇现世统一泰拉', sub:'统一地球（泰拉）的帝皇开始筹备重建人类文明的伟业。', id:'imperium'}
+      {date:'终末', title:'帝皇现世统一泰拉', sub:'统一地球（泰拉）的帝皇开始筹备重建人类文明的伟业。', id:'imperium'},
+      {date:'M25+', title:'亚空间风暴屏障成形', sub:'笼罩银河的亚空间风暴令航行几近不可能，人类殖民地被孤立为无数封建世界。', id:null},
+      {date:'M30 初', title:'泰拉统一战争', sub:'帝皇以雷霆手段整合地球各派系，建立统一的行星政府，为远征铺路。', id:'imperium'}
     ]
   },
   {
@@ -191,14 +196,21 @@ const ERAS = [
     events:[
       {date:'798.M30', title:'大远征开启', sub:'帝皇率二十原体与星际战士军团，以「帝皇之矛」舰队重夺人类世界。', id:'imperium'},
       {date:'约 800.M30', title:'发现原体的遗孤', sub:'二十位基因原体被散落星海，帝皇逐一寻回并交予各自军团。', id:'imperium'},
-      {date:'M30 末', title:'网道计划受挫', sub:'帝皇试图以「网道」连接银河免去亚空间航行，因灵族阻挠与混沌侵蚀而中止。', id:'eldar'}
+      {date:'M30 末', title:'网道计划受挫', sub:'帝皇试图以「网道」连接银河免去亚空间航行，因灵族阻挠与混沌侵蚀而中止。', id:'eldar'},
+      {date:'800.M30', title:'机械神教归顺', sub:'泰拉远征军抵达火星，帝皇与机械神教达成协议，获其工业与科技支持。', id:null},
+      {date:'~805.M30', title:'寻回基因原体', sub:'二十位基因原体陆续被寻回，各领军团，成为大远征最锋利的利刃。', id:'primarchs'},
+      {date:'~820.M30', title:'兽人 WAAAGH! 爆发', sub:'兽人战争头目集结庞大部落，迫使忠诚派以主力军团反复镇压边疆。', id:'orks'},
+      {date:'~830.M30', title:'异形文明的接触', sub:'人类重遇灵族、兽人、钛族等异形文明，或以战征服，或谨慎接触。', id:'tau'}
     ]
   },
   {
     id:'heresy', name:'荷鲁斯叛乱', span:'005 – 014.M31', color:'#8b2f24',
     events:[
       {date:'005.M31', title:'混沌腐蚀荷鲁斯', sub:'最被帝皇信任的原体荷鲁斯在恐惧之眼被混沌四神蛊惑，半数军团随之叛变。', id:'chaos'},
-      {date:'014.M31', title:'泰拉围城与终结', sub:'叛军在泰拉与帝皇决战后溃败，荷鲁斯被斩。帝皇重伤，被置于生命维持的王座，「帝国长夜」开始。', id:'imperium'}
+      {date:'014.M31', title:'泰拉围城与终结', sub:'叛军在泰拉与帝皇决战后溃败，荷鲁斯被斩。帝皇重伤，被置于生命维持的王座，「帝国长夜」开始。', id:'imperium'},
+      {date:'005.M31', title:'伊斯塔万三号陷阱', sub:'荷鲁斯假意和谈，于伊斯塔万三号伏杀忠诚派军团，叛乱彻底公开。', id:'horus'},
+      {date:'006–012.M31', title:'银河内战蔓延', sub:'叛军与忠诚派在无数世界厮杀，多个军团分裂，帝国疆域化为战场。', id:'chaos'},
+      {date:'014.M31', title:'圣血之殇', sub:'圣血天使军团在叛乱中遭重创，原体珞珈努斯几近陨落，埋下黑怒之祸。', id:null}
     ]
   },
   {
@@ -206,7 +218,13 @@ const ERAS = [
     events:[
       {date:'~745.M41', title:'第三次泰拉远征', sub:'帝国高调展示武力，却暴露了内部的腐朽与边疆的脆弱。', id:'imperium'},
       {date:'~900s.M41', title:'多次异形入侵', sub:'钛帝国东扩、泰伦虫巢舰队首次抵达、死灵王朝苏醒、灵族危机加剧。', id:'tyranids'},
-      {date:'999.M41', title:'卡迪亚陷落', sub:'混沌攻陷帝国门户卡迪亚，预示更大灾变将至。', id:'chaos'}
+      {date:'999.M41', title:'卡迪亚陷落', sub:'混沌攻陷帝国门户卡迪亚，预示更大灾变将至。', id:'chaos'},
+      {date:'~740.M41', title:'哥特战争', sub:'帝国舰队与混沌在哥特星区鏖战，争夺沉睡星神的金属残骸。', id:'chaos'},
+      {date:'~800s.M41', title:'第一次泰坦战争', sub:'泰坦军团在奥米西斯驱使下自相残杀，金属之神的代理就此现世。', id:null},
+      {date:'~900.M41', title:'泰伦首袭 Behemoth', sub:'虫巢舰队 Behemoth 首次扑向帝国，麦卡格之拳于万公里防线死守。', id:'tyranids'},
+      {date:'~940.M41', title:'泰伦再袭 Kraken', sub:'虫巢舰队 Kraken 撕开极域边境，灵族方舟世界陷入苦战。', id:'tyranids'},
+      {date:'~970.M41', title:'第二次阿米吉多顿', sub:'兽人霸主葛兹古尔两度兵临阿米吉多顿，帝国与兽人皆元气大伤。', id:'orks'},
+      {date:'999.M41', title:'第13次黑远征', sub:'阿巴顿集结混沌联军再攻卡迪亚，帝国门户摇摇欲坠。', id:'abaddon'}
     ]
   },
   {
@@ -214,7 +232,12 @@ const ERAS = [
     events:[
       {date:'000.M42', title:'大裂隙撕裂银河', sub:'阿巴顿的「卡迪安之陨」撕裂现实，银河被「大裂隙」一分为二，星语中断。', id:'chaos'},
       {date:'001.M42', title:'不屈远征', sub:'重生之帝皇（原体的基里曼）发起「不屈远征」，重连帝国疆域并引入「原铸星际战士」。', id:'imperium'},
-      {date:'M42 中期', title:'各方混战加剧', sub:'死灵全面苏醒、泰伦主力压境、钛族持续扩张，银河进入最黑暗的时代之一。', id:'necrons'}
+      {date:'M42 中期', title:'各方混战加剧', sub:'死灵全面苏醒、泰伦主力压境、钛族持续扩张，银河进入最黑暗的时代之一。', id:'necrons'},
+      {date:'000.M42', title:'卡迪安之陨', sub:'阿巴顿引爆黑石要塞摧毁卡迪亚，大裂隙随之撕裂银河。', id:'abaddon'},
+      {date:'001.M42', title:'基里曼复苏', sub:'原体基里曼于极域苏醒，受命摄政并发起不屈远征。', id:'guilliman'},
+      {date:'~002.M42', title:'原铸星际战士列装', sub:'基里曼引入强化版星际战士，重塑战团结构与战力。', id:'primarchs'},
+      {date:'~010s.M42', title:'古圣造物再现', sub:'失落的远古科技与古圣遗迹陆续现世，各方势力争夺。', id:'oldones'},
+      {date:'M42 中期', title:'死灵全面苏醒', sub:'沉默王率死灵王朝自墓世界崛起，重夺银河霸权。', id:'necrons'}
     ]
   }
 ];
@@ -2282,7 +2305,73 @@ const REFS = [
    detail:{ 类型:'考古威胁录','核心':'寂静王、星神碎片、活体金属。'}},
   {id:'rogue-trader', tag:'典籍', year:'M41', name:'异端审判庭密卷', en:'Inquisition Lore',
    lead:'审判庭（异端/异形/恶魔三派）的内部手册，规定如何识别并清除帝国之敌。',
-   detail:{ 类型:'机密手册','三派':'异端(Inquisitor)、异形(Xenos)、恶魔(Hereticus)。'}}
+   detail:{ 类型:'机密手册','三派':'异端(Inquisitor)、异形(Xenos)、恶魔(Hereticus)。'}},
+  {id:'codex-space-marines', tag:'圣典', year:'M41', name:'星际战士圣典', en:'Codex Space Marines',
+   lead:'规定战团建制、战术与信条的总纲，是忠诚派星际战士的作战圣经。',
+   detail:{'类型':'规则圣典', '范畴':'阿斯塔特', '关联':'帝国圣典'}},
+  {id:'codex-chaos-space-marines', tag:'圣典', year:'M41', name:'混沌星际战士圣典', en:'Codex Chaos Space Marines',
+   lead:'记载叛徒军团谱、恶魔引擎与黑暗 Mechanicus 的邪典。',
+   detail:{'类型':'规则圣典', '范畴':'混沌阿斯塔特', '关联':'混沌圣典'}},
+  {id:'codex-astra-militarum', tag:'圣典', year:'M41', name:'星界军圣典', en:'Codex Astra Militarum',
+   lead:'人类帝国常规军团的条令，以海量人命与钢铁洪流碾碎敌人。',
+   detail:{'类型':'规则圣典', '范畴':'帝国卫队', '关联':'帝国之拳'}},
+  {id:'codex-adepta-sororitas', tag:'圣典', year:'M41', name:'战斗修女圣典', en:'Codex Adepta Sororitas',
+   lead:'国教武装修女团的圣战条令，以信仰与火焰净化异端。',
+   detail:{'类型':'规则圣典', '范畴':'国教', '关联':'战斗修女'}},
+  {id:'codex-adeptus-mechanicus', tag:'圣典', year:'M41', name:'机械神教圣典', en:'Codex Adeptus Mechanicus',
+   lead:'火星教团的科技战争条令，将机器与欧姆尼赛亚信仰合一。',
+   detail:{'类型':'规则圣典', '范畴':'机械神教', '关联':'欧姆尼赛亚启示录'}},
+  {id:'codex-orks', tag:'圣典', year:'M41', name:'兽人圣典', en:'Codex Orks',
+   lead:'记录兽人部落、战争头目与 WAAAGH! 的蛮横战争艺术。',
+   detail:{'类型':'规则圣典', '范畴':'兽人', '关联':'兽人'}},
+  {id:'codex-aeldari', tag:'圣典', year:'M41', name:'灵族圣典', en:'Codex Aeldari',
+   lead:'方舟世界与邪恶灵族共有的灵能战争条令。',
+   detail:{'类型':'规则圣典', '范畴':'灵族', '关联':'灵族方舟圣典'}},
+  {id:'codex-necrons', tag:'圣典', year:'M41', name:'死灵圣典', en:'Codex Necrons',
+   lead:'沉睡王朝的活体金属军团条令，古老而冷酷。',
+   detail:{'类型':'规则圣典', '范畴':'死灵', '关联':'死灵王朝录'}},
+  {id:'codex-tyranids', tag:'圣典', year:'M41', name:'泰伦圣典', en:'Codex Tyranids',
+   lead:'虫巢舰队吞噬星海的生物学战争手册。',
+   detail:{'类型':'规则圣典', '范畴':'泰伦', '关联':'虫巢舰队志'}},
+  {id:'codex-tau', tag:'圣典', year:'M41', name:'钛帝国圣典', en:'Codex Tau Empire',
+   lead:'以「上上善道」扩张的集体主义战争条令。',
+   detail:{'类型':'规则圣典', '范畴':'钛族', '关联':'钛帝国'}},
+  {id:'hh-horus-rising', tag:'小说', year:'M31', name:'荷鲁斯崛起', en:'Horus Rising',
+   lead:'荷鲁斯叛乱三部曲首卷，讲述帝皇最爱的儿子如何走向背叛。',
+   detail:{'类型':'小说', '系列':'荷鲁斯叛乱', '作者':'Dan Abnett'}},
+  {id:'hh-false-gods', tag:'小说', year:'M31', name:'伪神', en:'False Gods',
+   lead:'荷鲁斯叛乱次卷，混沌的低语一步步侵蚀原体之心。',
+   detail:{'类型':'小说', '系列':'荷鲁斯叛乱', '作者':'Graham McNeill'}},
+  {id:'hh-galaxy-in-flames', tag:'小说', year:'M31', name:'银河烈焰', en:'Galaxy in Flames',
+   lead:'记录伊斯塔万三号大屠杀，忠诚派几遭全灭。',
+   detail:{'类型':'小说', '系列':'荷鲁斯叛乱', '作者':'Ben Counter'}},
+  {id:'eisenhorn', tag:'小说', year:'M41', name:'艾森霍恩审判官', en:'Eisenhorn',
+   lead:'审判官艾森霍恩追猎异端与恶魔的黑色侦探史诗。',
+   detail:{'类型':'小说', '系列':' Inquisition', '作者':'Dan Abnett'}},
+  {id:'gaunts-ghosts', tag:'小说', year:'M41', name:'冈特的幽灵', en:'Gaunts Ghosts',
+   lead:'被流放的星界军步兵团在银河边陲浴血奋战的群像。',
+   detail:{'类型':'小说', '系列':'星界军', '作者':'Dan Abnett'}},
+  {id:'ciaphas-cain', tag:'小说', year:'M41', name:'卡弗斯·凯恩', en:'Ciaphas Cain',
+   lead:'表面怯懦、实则传奇的帝国英雄的讽刺式回忆录。',
+   detail:{'类型':'小说', '系列':'喜剧战争', '作者':'Sandy Mitchell'}},
+  {id:'night-lords', tag:'小说', year:'M41', name:'暗夜领主', en:'Night Lords',
+   lead:'堕落军团暗夜领主在银河阴影中的恐怖统治。',
+   detail:{'类型':'小说', '系列':'混沌', '作者':'Aaron Dembski-Bowden'}},
+  {id:'rulebook-10e', tag:'规则书', year:'M42', name:'战锤40K 第十版核心规则', en:'Warhammer 40000 Core Rulebook',
+   lead:'现行版对战规则总纲，定义出兵、阶段与胜负。',
+   detail:{'类型':'规则书', '用途':'对战', '版本':'第十版'}},
+  {id:'imperial-armour', tag:'设定集', year:'M41', name:'帝国装甲', en:'Imperial Armour',
+   lead:'详述帝国载具、泰坦与要塞的重度设定与图鉴。',
+   detail:{'类型':'设定集', '范畴':'机械', '关联':'泰坦军团'}},
+  {id:'deathwatch-rpg', tag:'规则书', year:'M41', name:'死亡守望（TRPG）', en:'Deathwatch',
+   lead:'星际战士精英异形猎杀小队的角色扮演手册。',
+   detail:{'类型':'规则书', '用途':'RPG', '关联':'审判庭'}},
+  {id:'forge-world', tag:'设定集', year:'M41', name:'铸造世界', en:'Forge World',
+   lead:'高精度模型与冷门军团的中坚设定来源。',
+   detail:{'类型':'设定集', '范畴':'子厂', '关联':'机械神教'}},
+  {id:'lexicanum', tag:'编年', year:'M41', name:'灵能百科', en:'Lexicanum',
+   lead:'由粉丝维护的战锤 40K 词条百科，非官方但广受参考。',
+   detail:{'类型':'资料站', '性质':'非官方', '关联':'帝国圣典'}}
 ];
 
 /* ---------- 科技图鉴 ---------- */
