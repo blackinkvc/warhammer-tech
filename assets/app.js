@@ -12,6 +12,7 @@
 
   const byId = (arr)=>Object.fromEntries(arr.map(x=>[x.id,x]));
   const F = byId(FACTIONS), C = byId(CONCEPTS), R = byId(REFS), T = byId(TECH);
+  const GN = byId(GRAPH_NODES); // id -> 关系图节点
 
   /* ---------- 实体链接：把文本里的派系/概念/科技/参考名标为可点击 ---------- */
   function buildEntityMap(){
@@ -424,6 +425,26 @@
   }
   function closeModal(){ modal.classList.add('hidden'); modalCard.innerHTML=''; }
 
+  // 关系图邻居 -> 可点击关联节点（仅保留能弹窗的 faction/concept）
+  function relatedNodes(id){
+    const seen = {}, out = [];
+    GRAPH_LINKS.forEach(l=>{
+      let nid = l.s===id ? l.t : (l.t===id ? l.s : null);
+      if(!nid || seen[nid]) return;
+      const n = GN[nid];
+      if(!n) return;
+      const ok = (n.type==='faction' && F[nid]) || (n.type==='concept' && C[nid]);
+      if(!ok) return;
+      seen[nid]=1;
+      out.push({id:nid, label:n.label, type:n.type});
+    });
+    return out;
+  }
+  function relatedHtml(id){
+    const rel = relatedNodes(id);
+    if(!rel.length) return '<div class="m-empty">暂无关联节点</div>';
+    return `<div class="m-reltags">${rel.map(x=>`<span class="m-reltag" data-open="${x.type}" data-id="${x.id}">${escapeHtml(x.label)}</span>`).join('')}</div>`;
+  }
   function factionModal(f){
     const rows = [];
     rows.push(row('概述', `<div class="m-summary">${richText(f.detail.概述)}</div>`));
@@ -438,7 +459,10 @@
         <div class="m-en">${f.en} · ${f.group}</div>
         <div class="m-badges">${f.meta.map(m=>`<span class="tbadge">${m}</span>`).join('')}</div>
       </div>
-      <div class="modal-body">${rows.join('')}</div>`);
+      <div class="modal-body">
+        ${rows.join('')}
+        ${row('相关节点', relatedHtml(f.id))}
+      </div>`);
   }
   function conceptModal(c){
     const labelMap = {'说明':'释义','关键词':'关键词'};
@@ -452,7 +476,10 @@
         <h2>${c.name}</h2>
         <div class="m-en">${c.en} · ${c.cat}</div>
       </div>
-      <div class="modal-body">${body}</div>`);
+      <div class="modal-body">
+        ${body}
+        ${row('相关节点', relatedHtml(c.id))}
+      </div>`);
   }
   function refModal(r){
     const drows = Object.entries(r.detail).map(([k,v])=>`<div class="m-sub">${k}：${richText(v)}</div>`).join('');
