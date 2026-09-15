@@ -457,3 +457,17 @@ main{max-width:var(--maxw);margin:0 auto;padding:30px 24px 70px}
   .orn{width:64px;height:64px;align-self:center}
   .scroll-cta .cta-btn{flex:1 1 100%;text-align:center}
 }
+@media(max-width:560px){
+  body{overflow-x:hidden}
+  .site-header{padding:10px 12px}
+  .brand-text h1{font-size:18px}
+  .tagline{font-size:10px;letter-spacing:.5px}
+  .section-head h2{font-size:18px}
+  .graph-hint{font-size:10px;padding:4px 8px}
+  .gfilter,.fbtn{font-size:11px;padding:5px 9px}
+  .gf-title{display:none}
+  main{padding:12px}
+  .graph-side{max-height:240px}
+  #graph-svg{height:54vh}
+  .modal-card{max-height:86vh}
+}
