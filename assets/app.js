@@ -86,27 +86,35 @@
   const isSub = (f)=> !!f.parent;
 
   let currentView = 'home';
+  let currentId = null;
   let factionFilter = '全部';
   let techCat = '全部';
   let searchQ = '';
   let graphRAF = null;
 
   /* ---------------- 视图切换 ---------------- */
-  function setView(v){
+  function setView(v, id){
     currentView = v;
+    currentId = id || null;
     if(v!=='search') searchQ = '';
     $('#globalSearch').value = (v==='search') ? searchQ : '';
-    $$('.nav-main a').forEach(a=>a.classList.toggle('active', a.dataset.view===v));
-    const meta = {
-      home:['INDEX-000','世界观总览'],
-      factions:['FAC-INDEX','派系名录'],
-      timeline:['TL-INDEX','历史时间轴'],
-      concepts:['CON-INDEX','核心概念'],
-      tech:['TEC-INDEX','科技图鉴'],
-      search:['SCH-INDEX','全域检索'],
-      graph:['GRAPH-001','关系拓扑图'],
-      refs:['REF-INDEX','参考资料']
-    }[v];
+    const navV = (v==='techdetail') ? 'tech' : v;
+    $$('.nav-main a').forEach(a=>a.classList.toggle('active', a.dataset.view===navV));
+    let meta;
+    if(v==='techdetail' && currentId && T[currentId]){
+      meta = ['TEC-'+currentId.toUpperCase().slice(0,4), T[currentId].name];
+    } else {
+      meta = {
+        home:['INDEX-000','世界观总览'],
+        factions:['FAC-INDEX','派系名录'],
+        timeline:['TL-INDEX','历史时间轴'],
+        concepts:['CON-INDEX','核心概念'],
+        tech:['TEC-INDEX','科技图鉴'],
+        search:['SCH-INDEX','全域检索'],
+        graph:['GRAPH-001','关系拓扑图'],
+        refs:['REF-INDEX','参考资料']
+      }[v];
+    }
     $('#file-no').textContent = meta[0];
     $('#crumb-view').textContent = meta[1];
     if(graphRAF){ cancelAnimationFrame(graphRAF); graphRAF=null; }
@@ -121,6 +129,7 @@
     else if(currentView==='timeline') html = renderTimeline();
     else if(currentView==='concepts') html = renderConcepts();
     else if(currentView==='tech') html = renderTech();
+    else if(currentView==='techdetail') html = renderTechDetail();
     else if(currentView==='search') html = renderSearch();
     else if(currentView==='graph') html = renderGraph();
     else if(currentView==='refs') html = renderRefs();
@@ -333,6 +342,83 @@
     <div class="tech-grid">${cards}</div>`;
   }
 
+  /* 科技全页详情的「蓝图」文本：按四类工艺体系生成原理与建造流程，织入该条目自身的名称/代表/关键词 */
+  function techBlueprint(t){
+    const reps = (t.detail && t.detail.代表) ? t.detail.代表 : [];
+    const kws = (t.detail && t.detail.关键词) ? t.detail.关键词 : [];
+    const repTxt = reps.length ? reps.join('、') : '相应配套子系统';
+    const kwTxt = kws.length ? kws.join('、') : '标准工艺';
+    const cat = t.cat;
+    let principle, steps;
+    if(cat==='帝国科技'){
+      principle = `「${t.name}」（${t.en}）承袭人类帝国机械神教的造物传统：一切技术皆为「机魂」之显化，须以标准模板（STC）为范、经火星议会核准方可铸成。其运作内核对${kwTxt}的调控至为关键，常体现于${repTxt}等造物之中。`;
+      steps = [
+        `设计核准：由驻火星的机械神教议会依 STC 残卷核定「${t.name}」蓝图，凡偏离标准者皆需大贤者（Magos）特许。`,
+        `材料备料：于铸造世界（Forge World）开采精纯金属与合成物料，并以${kwTxt}相关元件铸模。`,
+        `核心锻造：Tech-priest 于神圣锻造厂以机魂铭刻仪式浇筑主体，确保「${t.name}」的意志与帝国意志合一。`,
+        `亚空间禁制与列装：为远航与作战加装亚空间导航禁制（Gellar Field 同级逻辑），经测试后配发${repTxt}所属作战单位。`
+      ];
+    } else if(cat==='异形科技'){
+      principle = `「${t.name}」属于异形种族的工艺体系，与帝国 STC 路数迥异，往往根植于${kwTxt}的独特物理或灵能理解，并凝结于${repTxt}之上。`;
+      steps = [
+        `工艺溯源：依该异形种族世代相传的造物法门确立「${t.name}」之形制，不假 STC 而自成体系。`,
+        `本源采集：取${kwTxt}相关稀有素材，于种族工坊精加工。`,
+        `核心构筑：以异形特有的工艺完成主体，强调与种族生理或灵能的契合，代表如${repTxt}。`,
+        `整合列装：将成品接入该族作战序列，完成适配与实战校调。`
+      ];
+    } else if(cat==='混沌科技'){
+      principle = `「${t.name}」乃混沌势力之造物，由铁匠战帮（Warpsmith）在亚空间熔炉中锻造，常将恶魔熔金与凡铁熔铸，其原理与${kwTxt}及邪神赐福纠葛难分，显化于${repTxt}。`;
+      steps = [
+        `邪宠授意：铁匠战帮于亚空间熔炉受混乱诸神或恶魔低语指引，定下「${t.name}」的亵渎形制。`,
+        `恶魔熔金：采集被诅咒的金属与凡人牺牲之灰，于混沌锻炉熔融。`,
+        `核心铸形：将恶魔之魂禁锢入${repTxt}，使造物兼具杀伤与扭曲现实之能。`,
+        `玷污列装：成品经混沌仪式加持后配发战帮，随军征伐。`
+      ];
+    } else { // 远古科技（黑暗科技时代 DAoT 失落造物）
+      principle = `「${t.name}」是人类「黑暗科技时代」（DAoT）的失落造物，其原理远超当今帝国所能全然理解，仅能从${repTxt}与${kwTxt}的残迹中窥得一二。`;
+      steps = [
+        `遗存发现：于远古废墟、失落的 STC 宝库或星舰残骸中寻得「${t.name}」的原型或碎片。`,
+        `逆向工程：由机械神教贤者小心翼翼拆解、模仿，忌惮其力量而步履维艰。`,
+        `机魂唤醒：尝试重启沉睡的机魂，往往伴有不可预知的异象与代价。`,
+        `珍惜列装：因不可复制，仅作为圣物级造物配发最紧要之处，由${repTxt}相关者妥为保管。`
+      ];
+    }
+    return { principle, steps };
+  }
+
+  /* 科技全页详情视图 */
+  function renderTechDetail(){
+    const t = T[currentId];
+    if(!t) return renderTech();
+    const b = techBlueprint(t);
+    const reps = (t.detail.代表)
+      ? `<section class="detail-sec"><h3 class="detail-h">代表产物</h3><ul class="m-list">${t.detail.代表.map(x=>`<li>${richText(x)}</li>`).join('')}</ul></section>`
+      : '';
+    const kws = (t.detail.关键词)
+      ? `<section class="detail-sec"><h3 class="detail-h">关键词</h3><div class="m-tags">${t.detail.关键词.map(k=>`<span class="m-tag">${richText(k)}</span>`).join('')}</div></section>`
+      : '';
+    return `
+    <div class="section-head"><h2>${t.name}</h2><span class="more">${t.en} · ${t.cat}</span></div>
+    <button type="button" class="back-btn" data-jump="tech">← 返回科技图鉴</button>
+    <div class="detail-body">
+      <section class="detail-sec">
+        <h3 class="detail-h">详细介绍</h3>
+        <div class="m-summary">${richText(t.detail.说明)}</div>
+        ${t.summary?`<p class="m-people">${richText(t.summary)}</p>`:''}
+      </section>
+      <section class="detail-sec">
+        <h3 class="detail-h">蓝图介绍 · 原理</h3>
+        <p class="m-summary">${richText(b.principle)}</p>
+      </section>
+      <section class="detail-sec">
+        <h3 class="detail-h">建造蓝图 · 流程</h3>
+        <ol class="blueprint-steps">${b.steps.map(s=>`<li>${richText(s)}</li>`).join('')}</ol>
+      </section>
+      ${reps}
+      ${kws}
+    </div>`;
+  }
+
   /* ---------------- 全域检索（跨视图结果列表） ---------------- */
   function renderSearch(){
     const q = searchQ;
@@ -506,6 +592,7 @@
         ${row('说明', `<div class="m-summary">${richText(t.detail.说明)}</div>`)}
         ${reps}
         ${row('关键词', `<div class="m-tags">${t.detail.关键词.map(k=>`<span class="m-tag">${richText(k)}</span>`).join('')}</div>`)}
+        <button type="button" class="m-more-btn" data-techdetail="${t.id}">查看完整档案 · 蓝图与原理 ⤢</button>
       </div>`);
   }
   function row(label, body){ return `<div class="m-row"><div class="m-label">${label}</div>${body}</div>`; }
@@ -520,9 +607,10 @@
   /* ---------------- 事件绑定 ---------------- */
   // 实体链接统一用事件委托：任何带 data-open 的元素（含弹窗内动态插入的）点击即响应，无需重复绑定
   document.addEventListener('click', (e)=>{
+    const td = e.target.closest('[data-techdetail]');
+    if(td && td.dataset.techdetail!==undefined){ closeModal(); setView('techdetail', td.dataset.techdetail); return; }
     const el = e.target.closest('[data-open]');
-    if(!el) return;
-    openByType(el.dataset.open, el.dataset.id);
+    if(el && el.dataset.open!==undefined) openByType(el.dataset.open, el.dataset.id);
   });
   function bindView(){
     $$('[data-jump]').forEach(el=>{
