@@ -722,6 +722,30 @@
   modal.addEventListener('click', (e)=>{ if(e.target.dataset.close!==undefined) closeModal(); });
   document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
 
+  /* ---------------- 深色模式 ---------------- */
+  function applyThemeGlyph(){
+    const tbtn = $('#themeToggle');
+    if(tbtn) tbtn.textContent = document.documentElement.classList.contains('dark') ? '☀' : '☾';
+  }
+  function setTheme(name){
+    const dark = name==='dark';
+    document.documentElement.classList.toggle('dark', dark);
+    const mc = document.querySelector('meta[name="theme-color"]');
+    if(mc) mc.setAttribute('content', dark ? '#1a1714' : '#F6F2E7');
+    try{ localStorage.setItem('wh-theme', name); }catch(e){}
+    applyThemeGlyph();
+  }
+  function initTheme(){
+    // head 内联脚本已预置 class；此处同步图标与 meta，并绑定切换
+    const dark = document.documentElement.classList.contains('dark');
+    const mc = document.querySelector('meta[name="theme-color"]');
+    if(mc) mc.setAttribute('content', dark ? '#1a1714' : '#F6F2E7');
+    applyThemeGlyph();
+    const tbtn = $('#themeToggle');
+    if(tbtn) tbtn.addEventListener('click', ()=> setTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark'));
+  }
+
   /* ---------------- 启动 ---------------- */
+  initTheme();
   setView('home');
 })();
