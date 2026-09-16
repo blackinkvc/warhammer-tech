@@ -11,7 +11,7 @@
   const modalCard = $('#modal-card');
 
   const byId = (arr)=>Object.fromEntries(arr.map(x=>[x.id,x]));
-  const F = byId(FACTIONS), C = byId(CONCEPTS), R = byId(REFS), T = byId(TECH);
+  const F = byId(FACTIONS), C = byId(CONCEPTS), R = byId(REFS), T = byId(TECH), G = CHANGELOG;
   const GN = byId(GRAPH_NODES); // id -> 关系图节点
 
   /* ---------- 实体链接：把文本里的派系/概念/科技/参考名标为可点击 ---------- */
@@ -90,6 +90,7 @@
   let factionFilter = '全部';
   let techCat = '全部';
   let conceptCat = '全部';
+  let refMode = 'card'; // 'card' 卡片网格 / 'list' 列表行
   let searchQ = '';
   let graphRAF = null;
 
@@ -113,7 +114,8 @@
         tech:['TEC-INDEX','科技图鉴'],
         search:['SCH-INDEX','全域检索'],
         graph:['GRAPH-001','关系拓扑图'],
-        refs:['REF-INDEX','参考资料']
+        refs:['REF-INDEX','参考资料'],
+        changelog:['LOG-INDEX','站务日志']
       }[v];
     }
     $('#file-no').textContent = meta[0];
@@ -134,6 +136,7 @@
     else if(currentView==='search') html = renderSearch();
     else if(currentView==='graph') html = renderGraph();
     else if(currentView==='refs') html = renderRefs();
+    else if(currentView==='changelog') html = renderChangelog();
     main.innerHTML = '<section class="view">'+html+'</section>';
     bindView();
   }
@@ -494,19 +497,83 @@
     let list = REFS;
     if(searchQ) list = list.filter(r=>matchText(r.name+r.en+r.lead+r.tag));
     const meta = searchQ ? `<div class="result-meta">检索「${searchQ}」· 命中 ${list.length} 条</div>` : '';
-    const cards = list.length
-      ? list.map(r=>`<article class="ref-card" data-open="ref" data-id="${r.id}">
+    const toggle = `<div class="view-switch"><span class="vs-label">视图</span>
+      <button type="button" class="vs-btn ${refMode==='card'?'active':''}" data-refmode="card">卡片</button>
+      <button type="button" class="vs-btn ${refMode==='list'?'active':''}" data-refmode="list">列表</button></div>`;
+    const empty = `<div class="empty-note">未检索到匹配「${searchQ}」的参考资料。</div>`;
+    let body = empty;
+    if(list.length){
+      if(refMode==='card'){
+        body = `<div class="ref-grid">${list.map(r=>`<article class="ref-card" data-open="ref" data-id="${r.id}">
           <div class="rc-top"><span class="rc-tag">${r.tag}</span><span class="rc-year">${r.year}</span></div>
           <h3 class="rc-name">${r.name}</h3>
           <span class="rc-en">${r.en}</span>
           <p class="rc-lead">${richText(r.lead)}</p>
           <div class="rc-foot"><span class="rc-founder">点击查看卷宗详情</span><span class="rc-more">查阅 →</span></div>
-        </article>`).join('')
-      : `<div class="empty-note">未检索到匹配「${searchQ}」的参考资料。</div>`;
+        </article>`).join('')}</div>`;
+      } else {
+        body = `<ul class="ref-list">${list.map(r=>`<li class="ref-row" data-open="ref" data-id="${r.id}">
+          <span class="rr-tag">${r.tag}</span>
+          <span class="rr-name">${r.name}</span>
+          <span class="rr-en">${r.en}</span>
+          <span class="rr-lead">${richText(r.lead)}</span>
+          <span class="rr-year">${r.year}</span>
+          <span class="rr-more">查阅 →</span>
+        </li>`).join('')}</ul>`;
+      }
+    }
     return `
     <div class="section-head"><h2>参考资料</h2><span class="more">圣典 · 史书 · 密卷</span></div>
+    ${toggle}
     ${meta}
-    <div class="ref-grid">${cards}</div>`;
+    ${body}`;
+  }
+
+  /* ---------------- 站务日志 ---------------- */
+  function renderChangelog(){
+    const entries = CHANGELOG; // 数组按版本倒序即最新在前（CHANGELOG 已按 l→a 写入）
+    if(!entries.length) return `<div class="empty-note">暂无更新记录。</div>`;
+    const body = entries.map(log=>{
+      const aiTag = log.ai ? `<span class="lg-ai">${log.ai}</span>` : '';
+      const pts = log.points || [];
+      const noteSec = log.note ? `<p class="lg-note">${richText(log.note)}</p>` : '';
+      // 要点≥5 视为长条目：默认只显示前4条，其余折叠可展开
+      const LONG = 4;
+      const long = pts.length > LONG;
+      const headPts = pts.slice(0,LONG).map(p=>`<li>${richText(p)}</li>`).join('');
+      const restHtml = long
+        ? `<div class="lg-rest" hidden><ul class="lg-points">${pts.slice(LONG).map(p=>`<li>${richText(p)}</li>`).join('')}</ul></div>`
+        : '';
+      const toggle = long
+        ? `<button type="button" class="lg-toggle" data-lgtoggle>展开完整内容（共 ${pts.length} 点） ↓</button>`
+        : '';
+      const list = `<ul class="lg-points">${headPts}</ul>${restHtml}`;
+      return `<article class="lg-card">
+        <div class="lg-head">
+          <span class="lg-ver">v${log.version}</span>
+          <span class="lg-date">${log.date}</span>
+          ${aiTag}
+        </div>
+        <h3 class="lg-title">${richText(log.title)}</h3>
+        ${noteSec}
+        ${list}
+        ${toggle}
+      </article>`;
+    }).join('');
+    return `
+    <div class="section-head"><h2>站务日志</h2><span class="more">版本 · 时间 · 工具 · 修订</span></div>
+    <p class="log-intro">记录本项目自建站以来的每次版本迭代：版本号、日期、协作 AI 与主要内容。最新在前；要点较多时默认收起，可展开查看完整条目。</p>
+    <div class="log-list">${body}</div>`;
+  }
+  // 日志条目「展开/收起」：切换该卡片折叠区 lg-rest 与按钮文案
+  function toggleLog(btn){
+    const card = btn.closest('.lg-card');
+    if(!card) return;
+    const rest = card.querySelector('.lg-rest');
+    if(!rest) return;
+    const hidden = rest.hasAttribute('hidden');
+    if(hidden){ rest.removeAttribute('hidden'); btn.textContent = '收起 ↑'; }
+    else { rest.setAttribute('hidden',''); btn.textContent = '展开完整内容（共 '+(card.querySelectorAll('.lg-points li').length)+' 点） ↓'; }
   }
 
   /* ---------------- 匹配函数 ---------------- */
@@ -636,6 +703,14 @@
     });
     $$('.fbtn[data-concatfilter]').forEach(b=>{
       b.addEventListener('click', ()=>{ conceptCat=b.dataset.concatfilter; render(); });
+    });
+    // 资料页：卡片/列表 视图切换
+    $$('.vs-btn[data-refmode]').forEach(b=>{
+      b.addEventListener('click', ()=>{ refMode=b.dataset.refmode; render(); });
+    });
+    // 站务日志：展开/收起长条目
+    $$('[data-lgtoggle]').forEach(b=>{
+      b.addEventListener('click', ()=>toggleLog(b));
     });
     $$('.sg-head').forEach(h=>{
       h.addEventListener('click', ()=>h.closest('.search-group').classList.toggle('collapsed'));

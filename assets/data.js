@@ -4167,3 +4167,126 @@ const TECH = [
 ];
 
 
+
+
+/* 更新日志：站务修订史（版本号=index.html 资源缓存版本，对应 git 里程碑） */
+const CHANGELOG = [
+  {
+    id:'v20260915m', version:'20260915m', date:'2026-09-16', ai:'Claude',
+    title:'站务日志页 + 资料列表切换',
+    note:'新增站内「站务日志」视图与仓库级 CHANGELOG.md；资料页支持卡片/列表切换。',
+    points:[
+      '新增「站务日志」导航与视图（renderChangelog）：倒序展示每次版本迭代（资源版本号 / 日期 / 协作 AI / 标题 / 说明 / 要点），最新在前',
+      '长条目（要点 > 4）默认收起，提供「展开完整内容」按钮，可一键展开 / 收起（lg-toggle / lg-rest）',
+      '资料页新增「卡片 / 列表」视图切换按钮（view-switch + data-refmode），refMode 状态记忆当前选择',
+      '仓库根新增 CHANGELOG.md，README 增加日志入口说明',
+      'tests/check.js 补充「站务日志」与「资料列表切换」两组断言；npm run check 全绿',
+      '资源版本号 20260915l → 20260915m（破缓存）'
+    ]
+  },
+  {
+    id:'v20260915l', version:'20260915l', date:'2026-09-16', ai:'Claude (联合子代理)',
+    title:'科技逐条补详 + 概念分类筛选 + 测试入仓',
+    note:'（本次）逐条真实考据 + 交互增强 + 回归固化。',
+    points:[
+      '科技 149 条逐条补详——历史/影响/运作三段差异化内容（远古19/混沌13/帝国75/异形42，四类各自独立贴合设定，非模板）',
+      '概念视图新增「类别」分类筛选（data-concatfilter）',
+      '移除 SEARCH_INDEX 死代码，data.js 瘦身',
+      '新增 tests/check.js DOM 桩回归（数据健康/渲染冒烟/科技详情/概念筛选，18 项全绿）+ package.json npm run check',
+      '版本号 20260915k → 20260915l'
+    ]
+  },
+  {
+    id:'v20260915k', version:'20260915k', date:'2026-09-15', ai:'Claude (Anthropic)',
+    title:'科技详情全页 + 蓝图流程',
+    note:'科技弹窗进阶为可展开的全页详情。',
+    points:[
+      '模态新增「查看完整档案」按钮进入 techdetail 视图',
+      '新增 techBlueprint 按四类工艺（帝国/异形/混沌/远古）生成原理与建造流程蓝图'
+    ]
+  },
+  {
+    id:'v20260915j', version:'20260915j', date:'2026-09-15', ai:'Claude (Anthropic)',
+    title:'首页 hero 主副标题大小互换',
+    note:'布局微调。',
+    points:[
+      'h2 改为「第 41 千年 · 战锤 40K 世界观科普长卷」，lead 改为「人类帝国与银河诸族」'
+    ]
+  },
+  {
+    id:'v20260915i', version:'20260915i', date:'2026-09-15', ai:'Claude (Anthropic)',
+    title:'删除首页装饰性 SVG 图标',
+    note:'清理长卷中的视觉噪音。',
+    points:[
+      '删除 hero 与章节装饰 SVG（鹰徽/闪电/罗盘/眼睛）及未用 CSS'
+    ]
+  },
+  {
+    id:'v20260915h', version:'20260915h', date:'2026-09-15', ai:'Claude (Anthropic)',
+    title:'首页概念收起 + 概念随机排序',
+    note:'长页改短，探索随机化。',
+    points:[
+      '首页核心概念默认收起（展开按钮，预览 30 / 共 232）',
+      '核心概念视图每次打开随机排序（Fisher-Yates shuffle）'
+    ]
+  },
+  {
+    id:'v20260915g', version:'20260915g', date:'2026-09-15', ai:'Claude (Anthropic)',
+    title:'深色模式',
+    note:'羊皮纸浅色为基准，深色作可切换反相方案，不破坏既定视觉。',
+    points:[
+      ':root.dark 变量反相 + header 切换按钮（防闪烁预置/跟随系统/localStorage 持久化）',
+      'hover/#fff 硬编码改 var(--panel)；弹窗遮罩与节点圈描边适配深色'
+    ]
+  },
+  {
+    id:'v20260915f', version:'20260915f', date:'2026-09-15', ai:'Claude (Anthropic)',
+    title:'批4 · 内部互联与数据体检',
+    note:'跨节点互通 + 全量点击链冒烟。',
+    points:[
+      '概念/派系弹窗新增「相关节点」区块（基于关系图邻居，可点击跳转）',
+      '全量点击链冒烟 0 异常；重复概念审查 0 真重复'
+    ]
+  },
+  {
+    id:'v20260915e', version:'20260915e', date:'2026-09-15', ai:'Claude (Anthropic)',
+    title:'批3 · 视觉与元信息——favicon + OG + 移动端',
+    note:'站点对外分享与移动浏览整备。',
+    points:[
+      '新增 favicon.svg（羊皮纸圆角底 + 暗金竖剑徽）',
+      '补 meta/Open Graph/Twitter 分享标签',
+      '新增 @media(max-width:560px) 移动端收敛'
+    ]
+  },
+  {
+    id:'v20260915d', version:'20260915d', date:'2026-09-15', ai:'Claude (Anthropic)',
+    title:'批2 · 关系图可用性——分类筛选 + 收敛停帧',
+    note:'让 245 节点的大图更易用、更省 CPU。',
+    points:[
+      '关系图新增「分类显隐」筛选 chips，联动侧栏同步隐藏',
+      '力导向 alpha 收敛后停帧（graphRAF 归零），拖拽/筛选自动唤醒，省 CPU'
+    ]
+  },
+  {
+    id:'v20260915c', version:'20260915c', date:'2026-09-15', ai:'Claude (Anthropic)',
+    title:'批1 · 内容补全——时间轴与资料扩充',
+    note:'补齐历史脉络与参考来源。',
+    points:[
+      '时间轴事件 17 → 40（远古/大远征/荷鲁斯之乱/M41/M42 各纪元分档补充）',
+      '参考资料 REFS 8 → 30（圣典 10 / 小说 7 / 规则书 3 / 设定集 2 等）',
+      '升版资源版本号破缓存（→20260915c）'
+    ]
+  },
+  {
+    id:'v20260914a', version:'20260914a', date:'2026-09-14', ai:'Claude (Anthropic)',
+    title:'建站 · SPA 骨架 + 卷宗视觉 + 五个初始视图',
+    note:'从一个静态 index.html + 数据/逻辑/样式三件套起步，搭建单页百科骨架。',
+    points:[
+      '落地结构：index.html + assets/{data.js,app.js,style.css}，纯静态无构建、无外部依赖',
+      '五个初始视图：世界观首页 / 派系 / 时间轴 / 核心概念 / 关系拓扑图（自写力导向，无 D3）',
+      '卷宗视觉体系：羊皮纸 #F6F2E7 / 墨字 #141210 / 暗金 #8B6914 / 宋体 / 蓝图网格',
+      '初始数据规模：派系 8、概念 10、纪元 7(17 事件)、关系图 14 节点 23 连线、资料 8'
+    ]
+  }
+];
+

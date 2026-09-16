@@ -49,7 +49,7 @@ const dupName = (() => {
   return Object.entries(names).filter(([, n]) => n > 1).length;
 })();
 ok('跨类别无重名', dupName === 0);
-ok('无 SEARCH_INDEX 死代码残留', !fs.readFileSync(DATA, 'utf8').includes('SEARCH_INDEX'));
+ok('无 SEARCH_INDEX 死代码残留', !/const SEARCH_INDEX\s*=\s*\[/.test(fs.readFileSync(DATA, 'utf8')));
 
 /* ---------- DOM 桩（最小实现，掩盖全部 DOM API） ---------- */
 console.log('== DOM 桩渲染冒烟 ==');
@@ -65,18 +65,25 @@ function FakeEl() {
 }
 const REQUIRED = ['#main', '#globalSearch', '#modal', '#modal-card', '#breadcrumb', '#file-no', '#crumb-view', '#themeToggle'];
 const els = {};
-const navs = ['home', 'factions', 'timeline', 'concepts', 'tech', 'graph', 'refs'].map(v => {
+const navs = ['home', 'factions', 'timeline', 'concepts', 'tech', 'graph', 'refs', 'changelog'].map(v => {
   const a = FakeEl(); a.dataset.view = v; return a;
 });
 const fbtns = ['全部', '核心', '帝国', '历史', '混沌', '人物', '组织', '地点', '物种', '事件', '圣物', '宇宙'].map(c => {
   const b = FakeEl(); b.dataset.concatfilter = c; return b;
 });
+// 资料页：卡片/列表 切换按钮池
+const refModeBtns = ['card', 'list'].map(m => { const b = FakeEl(); b.dataset.refmode = m; return b; });
+// 站务日志：展开/收起 按钮池（真实条目为长条目时才有；桩里建一个，绑定逻辑用空值保护）
+const lgToggles = [FakeEl()];
+lgToggles.forEach(b => { b.dataset.lgtoggle = ''; });
 const doc = {
   documentElement: { classList: { contains() { return false; }, toggle() {} } },
   querySelector(sel) { return REQUIRED.includes(sel) ? (els[sel] || (els[sel] = FakeEl())) : (els[sel] || null); },
   querySelectorAll(sel) {
     if (sel === '.nav-main a') return navs;
     if (sel.includes('data-concatfilter')) return fbtns;
+    if (sel.includes('data-refmode')) return refModeBtns;
+    if (sel.includes('data-lgtoggle')) return lgToggles;
     return [];
   },
   addEventListener(t, f) { this['_' + t] = f; }, removeEventListener() {},
@@ -130,6 +137,27 @@ const personCats = cardCats();
 ok('点「人物」后全部卡片为人物', personCats.length > 0 && personCats.every(c => c === '人物'));
 fbtns.find(b => b.dataset.concatfilter === '全部')._click();
 ok('点「全部」后分类恢复多元', new Set(cardCats()).size > 1);
+
+/* ---------- 站务日志 ---------- */
+console.log('== 站务日志 ==');
+navs.find(a => a.dataset.view === 'changelog')._click();
+const lgHtml = main.innerHTML;
+ok('日志页渲染出 lg-card 条目', (lgHtml.match(/lg-card/g) || []).length >= 11);
+ok('日志页含 lg-toggle（长条目展开按钮）', lgHtml.includes('lg-toggle'));
+ok('日志页含 lg-rest（折叠区）', lgHtml.includes('lg-rest'));
+ok('日志页含版本号标记（lg-ver）', lgHtml.includes('lg-ver'));
+ok('日志页含 intro 说明', lgHtml.includes('log-intro'));
+ok('日志页含 AI 标签（lg-ai）', lgHtml.includes('lg-ai'));
+
+/* ---------- 资料列表 / 卡片切换 ---------- */
+console.log('== 资料列表切换 ==');
+navs.find(a => a.dataset.view === 'refs')._click();
+ok('资料页默认卡片网格（ref-grid）', main.innerHTML.includes('ref-grid'));
+const listBtn = refModeBtns.find(b => b.dataset.refmode === 'list');
+if (listBtn) { listBtn._click(); }
+ok('点「列表」后切换为 ref-list 行式', main.innerHTML.includes('ref-list') && !main.innerHTML.includes('ref-grid'));
+refModeBtns.find(b => b.dataset.refmode === 'card')._click();
+ok('点「卡片」后切回 ref-grid', main.innerHTML.includes('ref-grid'));
 
 console.log('\n结果：通过 ' + pass + '，失败 ' + fail);
 process.exit(fail ? 1 : 0);
