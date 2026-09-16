@@ -1,0 +1,10 @@
+{
+  "name": "warhammer-tech",
+  "version": "1.0.0",
+  "private": true,
+  "description": "战锤 40K 世界观科普档案库（纯静态 SPA）· 本地校验脚本",
+  "scripts": {
+    "check": "node tests/check.js"
+  },
+  "license": "UNLICENSED"
+}

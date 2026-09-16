@@ -89,6 +89,7 @@
   let currentId = null;
   let factionFilter = '全部';
   let techCat = '全部';
+  let conceptCat = '全部';
   let searchQ = '';
   let graphRAF = null;
 
@@ -298,10 +299,15 @@
   }
 
   /* ---------------- 概念 ---------------- */
+  const conceptCats = ['全部', ...Array.from(new Set(CONCEPTS.map(c=>c.cat)))];
   function renderConcepts(){
     let list = shuffle(CONCEPTS); // 每次打开随机排序，增加探索性
+    if(conceptCat!=='全部') list = list.filter(c=>c.cat===conceptCat);
     if(searchQ) list = list.filter(c=>matchConcept(c));
     const meta = searchQ ? `<div class="result-meta">检索「${searchQ}」· 命中 ${list.length} 条</div>` : '';
+    const fbtns = conceptCats.map(g=>
+      `<button class="fbtn ${g===conceptCat?'active':''}" data-concatfilter="${g}">${g}</button>`
+    ).join('');
     const cards = list.length
       ? list.map(c=>`<article class="ccard" data-open="concept" data-id="${c.id}" style="--cat-color:${c.color}">
           <span class="ctag">${c.cat}</span>
@@ -312,6 +318,7 @@
       : `<div class="empty-note">未检索到匹配「${searchQ}」的概念。</div>`;
     return `
     <div class="section-head"><h2>核心概念</h2><span class="more">理解世界观的钥匙</span></div>
+    <div class="filter-bar"><div class="filter-group"><span class="fg-label">类别</span>${fbtns}</div></div>
     ${meta}
     <div class="concept-grid">${cards}</div>`;
   }
@@ -397,6 +404,10 @@
     const kws = (t.detail.关键词)
       ? `<section class="detail-sec"><h3 class="detail-h">关键词</h3><div class="m-tags">${t.detail.关键词.map(k=>`<span class="m-tag">${richText(k)}</span>`).join('')}</div></section>`
       : '';
+    // 通用「历史/影响/运作」等附加详述段落（若 data 存在则渲染）
+    const extraSecs = ['历史','影响','运作'].filter(k=>t.detail[k]).map(k=>
+      `<section class="detail-sec"><h3 class="detail-h">${k}</h3><p class="m-summary">${richText(t.detail[k])}</p></section>`
+    ).join('');
     return `
     <div class="section-head"><h2>${t.name}</h2><span class="more">${t.en} · ${t.cat}</span></div>
     <button type="button" class="back-btn" data-jump="tech">← 返回科技图鉴</button>
@@ -406,6 +417,7 @@
         <div class="m-summary">${richText(t.detail.说明)}</div>
         ${t.summary?`<p class="m-people">${richText(t.summary)}</p>`:''}
       </section>
+      ${extraSecs}
       <section class="detail-sec">
         <h3 class="detail-h">蓝图介绍 · 原理</h3>
         <p class="m-summary">${richText(b.principle)}</p>
@@ -621,6 +633,9 @@
     });
     $$('.fbtn[data-techfilter]').forEach(b=>{
       b.addEventListener('click', ()=>{ techCat=b.dataset.techfilter; render(); });
+    });
+    $$('.fbtn[data-concatfilter]').forEach(b=>{
+      b.addEventListener('click', ()=>{ conceptCat=b.dataset.concatfilter; render(); });
     });
     $$('.sg-head').forEach(h=>{
       h.addEventListener('click', ()=>h.closest('.search-group').classList.toggle('collapsed'));
