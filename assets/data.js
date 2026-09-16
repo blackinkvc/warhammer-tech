@@ -4172,7 +4172,7 @@ const TECH = [
 /* 更新日志：站务修订史（版本号=index.html 资源缓存版本，对应 git 里程碑） */
 const CHANGELOG = [
   {
-    id:'v20260915m', version:'20260915m', date:'2026-09-16', ai:'Claude',
+    id:'v20260915m', version:'20260915m', date:'2026-09-16', ai:'DeepSeek-V4 Flash（硅基流动 · CherryStudio · Claude 架构）',
     title:'站务日志页 + 资料列表切换',
     note:'新增站内「站务日志」视图与仓库级 CHANGELOG.md；资料页支持卡片/列表切换。',
     points:[
@@ -4185,7 +4185,7 @@ const CHANGELOG = [
     ]
   },
   {
-    id:'v20260915l', version:'20260915l', date:'2026-09-16', ai:'Claude (联合子代理)',
+    id:'v20260915l', version:'20260915l', date:'2026-09-16', ai:'DeepSeek-V4 Flash（硅基流动 · CherryStudio · Claude 架构）',
     title:'科技逐条补详 + 概念分类筛选 + 测试入仓',
     note:'（本次）逐条真实考据 + 交互增强 + 回归固化。',
     points:[
@@ -4197,7 +4197,7 @@ const CHANGELOG = [
     ]
   },
   {
-    id:'v20260915k', version:'20260915k', date:'2026-09-15', ai:'Claude (Anthropic)',
+    id:'v20260915k', version:'20260915k', date:'2026-09-15', ai:'DeepSeek-V4 Flash（硅基流动 · CherryStudio · Claude 架构）',
     title:'科技详情全页 + 蓝图流程',
     note:'科技弹窗进阶为可展开的全页详情。',
     points:[
@@ -4206,7 +4206,7 @@ const CHANGELOG = [
     ]
   },
   {
-    id:'v20260915j', version:'20260915j', date:'2026-09-15', ai:'Claude (Anthropic)',
+    id:'v20260915j', version:'20260915j', date:'2026-09-15', ai:'DeepSeek-V4 Flash（硅基流动 · CherryStudio · Claude 架构）',
     title:'首页 hero 主副标题大小互换',
     note:'布局微调。',
     points:[
@@ -4214,7 +4214,7 @@ const CHANGELOG = [
     ]
   },
   {
-    id:'v20260915i', version:'20260915i', date:'2026-09-15', ai:'Claude (Anthropic)',
+    id:'v20260915i', version:'20260915i', date:'2026-09-15', ai:'DeepSeek-V4 Flash（硅基流动 · CherryStudio · Claude 架构）',
     title:'删除首页装饰性 SVG 图标',
     note:'清理长卷中的视觉噪音。',
     points:[
@@ -4222,7 +4222,7 @@ const CHANGELOG = [
     ]
   },
   {
-    id:'v20260915h', version:'20260915h', date:'2026-09-15', ai:'Claude (Anthropic)',
+    id:'v20260915h', version:'20260915h', date:'2026-09-15', ai:'DeepSeek-V4 Flash（硅基流动 · CherryStudio · Claude 架构）',
     title:'首页概念收起 + 概念随机排序',
     note:'长页改短，探索随机化。',
     points:[
@@ -4231,7 +4231,7 @@ const CHANGELOG = [
     ]
   },
   {
-    id:'v20260915g', version:'20260915g', date:'2026-09-15', ai:'Claude (Anthropic)',
+    id:'v20260915g', version:'20260915g', date:'2026-09-15', ai:'DeepSeek-V4 Flash（硅基流动 · CherryStudio · Claude 架构）',
     title:'深色模式',
     note:'羊皮纸浅色为基准，深色作可切换反相方案，不破坏既定视觉。',
     points:[
@@ -4240,7 +4240,7 @@ const CHANGELOG = [
     ]
   },
   {
-    id:'v20260915f', version:'20260915f', date:'2026-09-15', ai:'Claude (Anthropic)',
+    id:'v20260915f', version:'20260915f', date:'2026-09-15', ai:'DeepSeek-V4 Flash（硅基流动 · CherryStudio · Claude 架构）',
     title:'批4 · 内部互联与数据体检',
     note:'跨节点互通 + 全量点击链冒烟。',
     points:[
@@ -4249,7 +4249,7 @@ const CHANGELOG = [
     ]
   },
   {
-    id:'v20260915e', version:'20260915e', date:'2026-09-15', ai:'Claude (Anthropic)',
+    id:'v20260915e', version:'20260915e', date:'2026-09-15', ai:'DeepSeek-V4 Flash（硅基流动 · CherryStudio · Claude 架构）',
     title:'批3 · 视觉与元信息——favicon + OG + 移动端',
     note:'站点对外分享与移动浏览整备。',
     points:[
@@ -4259,7 +4259,7 @@ const CHANGELOG = [
     ]
   },
   {
-    id:'v20260915d', version:'20260915d', date:'2026-09-15', ai:'Claude (Anthropic)',
+    id:'v20260915d', version:'20260915d', date:'2026-09-15', ai:'DeepSeek-V4 Flash（硅基流动 · CherryStudio · Claude 架构）',
     title:'批2 · 关系图可用性——分类筛选 + 收敛停帧',
     note:'让 245 节点的大图更易用、更省 CPU。',
     points:[
@@ -4268,7 +4268,7 @@ const CHANGELOG = [
     ]
   },
   {
-    id:'v20260915c', version:'20260915c', date:'2026-09-15', ai:'Claude (Anthropic)',
+    id:'v20260915c', version:'20260915c', date:'2026-09-15', ai:'DeepSeek-V4 Flash（硅基流动 · CherryStudio · Claude 架构）',
     title:'批1 · 内容补全——时间轴与资料扩充',
     note:'补齐历史脉络与参考来源。',
     points:[
@@ -4278,7 +4278,7 @@ const CHANGELOG = [
     ]
   },
   {
-    id:'v20260914a', version:'20260914a', date:'2026-09-14', ai:'Claude (Anthropic)',
+    id:'v20260914a', version:'20260914a', date:'2026-09-14', ai:'DeepSeek-V4 Flash（硅基流动 · CherryStudio · Claude 架构）',
     title:'建站 · SPA 骨架 + 卷宗视觉 + 五个初始视图',
     note:'从一个静态 index.html + 数据/逻辑/样式三件套起步，搭建单页百科骨架。',
     points:[
